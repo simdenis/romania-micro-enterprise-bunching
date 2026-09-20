@@ -1,5 +1,7 @@
 # Bunching at a Moving Threshold: Firm Responses to Romania's Micro-Enterprise Tax, 2014–2025
 
+[![Data DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22863290.svg)](https://doi.org/10.5281/zenodo.22863290)
+
 Replication package for the working paper of the same title (Denis Siminiuc, September 2026). It contains the
 data pipeline, the harmonised firm-year panel, the trade-register linkage with anonymised keys, every table and
 figure in the paper, and the legal timeline with Monitorul Oficial references.
@@ -9,7 +11,7 @@ figure in the paper, and the legal timeline with Monitorul Oficial references.
 | Folder | Contents |
 |---|---|
 | `code/` | All analysis scripts (Python). `build_panel.py` builds the panel from the raw statement files; `bunching_check.py`, `diff_in_bunching.py`, `checks_round*.py`, `revision*_checks.py` produce every number in the paper; `make_tables.py` writes the LaTeX tables from `outputs/`. |
-| `data/` | The harmonised panel and linkage tables (Parquet), the BNR year-end EUR/RON rates, and a manifest of the source files with their data.gov.ro URLs and upload dates. Parquet files are hosted on Zenodo (DOI in the paper) because of their size; the manifest and rates are in the repository. |
+| `data/` | The harmonised panel and linkage tables (Parquet), the BNR year-end EUR/RON rates, and a manifest of the source files with their data.gov.ro URLs and upload dates. Parquet files are hosted on Zenodo (https://doi.org/10.5281/zenodo.22863290) because of their size; the manifest and rates are in the repository. |
 | `outputs/` | Every CSV and PNG behind the tables and figures. |
 | `paper/` | `main.tex`, `main.pdf`, the generated tables, figures, and `legal_timeline.md`. |
 
@@ -51,7 +53,7 @@ the scripts document how they were used and the cross-check table is in `outputs
 
 ```
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-# place the Parquet files from Zenodo in data/
+# download the Parquet files from https://doi.org/10.5281/zenodo.22863290 into data/
 .venv/bin/python code/bunching_check.py
 .venv/bin/python code/diff_in_bunching.py && .venv/bin/python code/diff_in_bunching_counts.py
 .venv/bin/python code/checks_round2.py && .venv/bin/python code/checks_round3.py && .venv/bin/python code/checks_round4.py
@@ -79,7 +81,7 @@ responsible for the content.
 ## Citation
 
 Siminiuc, D. (2026). Bunching at a Moving Threshold: Firm Responses to Romania's Micro-Enterprise Tax, 2014–2025.
-Working paper. Replication package: https://github.com/simdenis/romania-micro-enterprise-bunching (data DOI to be added).
+Working paper. Code: https://github.com/simdenis/romania-micro-enterprise-bunching. Data: Zenodo, https://doi.org/10.5281/zenodo.22863290.
 
 ## License
 
