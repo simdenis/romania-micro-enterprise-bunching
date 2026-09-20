@@ -96,7 +96,7 @@ for ax, y in zip(axes.flat, years):
     b, cf = excess_mass(counts.astype(float), centers, thr, bw)
     stats.append(dict(year=y, threshold_eur=thr, rate_prev=rate_prev, firms_in_window=int(counts.sum()), excess_mass_b=round(b, 2)))
     ax.bar(centers / 1000, counts, width=bw / 1000 * 0.9, color="#4C72B0")
-    ax.plot(centers / 1000, cf, color="#C44E52", lw=1.2)
+    if y in (2014, 2015): ax.plot(centers / 1000, cf, color="#C44E52", lw=1.2)
     ax.axvline(thr / 1000, color="k", ls="--", lw=1)
     ax.axvline(thr * rate_cur / rate_prev / 1000, color="grey", ls=":", lw=1)  # same threshold at current year-end rate
     if y in SECOND_NOTCH and lo < SECOND_NOTCH[y] < hi:

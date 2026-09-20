@@ -79,7 +79,7 @@ for col, name in [("pct_sib_new", "Administrator registered another firm in prio
         rows.append((name if y0 == 2018 else "", f"{y0}--{y1}", *[f"{v[0]*100:.2f}" for v in vals], f"{z:.1f}"))
 w("split", tab(["Measure", "Years", "Bunchers (0--5\\% below)", "Just above (0--10\\%)", "10--25\\% below", "25--100\\% above", "$z$"], rows, "llrrrrr",
     "Sibling-firm indicators by position relative to the threshold, SRLs", "tab:split",
-    "Pooled shares, \\%. $z$ tests bunchers against firms just above the threshold. Administrators as recorded in the ONRC snapshot of 2 September 2026; persons administering more than 50 firms and addresses hosting more than 20 firms excluded.", r"\footnotesize", landscape=True))
+    "Pooled shares, \\%. $z$ tests bunchers against firms just above the threshold (unclustered; clustered by firm, $z = 4.3$ and $8.6$). Standardising the just-above group to the bunchers' age distribution gives 2.70 versus 2.20 on the administrator measure and 12.26 versus 10.23 on the address measure (Appendix Table~\\ref{tab:splitage}). Administrators as recorded in the ONRC snapshot of 2 September 2026; persons administering more than 50 firms and addresses hosting more than 20 firms excluded.", r"\footnotesize"))
 print("tables written:", sorted(os.listdir(T)))
 
 # ---- revision tables ----
@@ -112,16 +112,20 @@ w("robust", tab(["Notch", "$b$", "quantile-corrected", "window $\\pm$10\\%", "$\
 lf = pd.read_csv(f"{OUT}/rev2_lei_modal_fine.csv")
 rows = [(int(r.year), f"{int(r.thr_prev):,}", f"{int(r.thr_cur):,}", r.modal_5k_bin, int(r.firms_5k), f"{int(r.dist_5k_to_prev):+,}", f"{int(r.thr_cur - r.thr_prev):+,}") for _, r in lf.iterrows()]
 w("lei", tab(["Year", "\\euro{}1M at prev.\\ year-end rate", "\\euro{}1M at current year-end rate", "Modal 5,000-lei bin", "Firms in it", "Bin centre minus prev.-rate threshold", "Current minus prev.-rate threshold"], rows, "lrrlrrr",
-    "Location of the revenue spike in lei, 2018--2022", "tab:lei", "Modal 5,000-lei bin within 60,000 lei of either candidate threshold. At 1,000-lei resolution the modal bins hold only 16 to 31 firms and are noisier; they lie 2,000 to 5,000 lei below the previous-rate threshold in 2020--2022 and further below in 2018--2019.", landscape=True))
+    "Location of the revenue spike in lei, 2018--2022", "tab:lei", "Modal 5,000-lei bin within 60,000 lei of either candidate threshold. At 1,000-lei resolution the modal bins hold only 16 to 31 firms and are noisier; they lie 2,000 to 5,000 lei below the previous-rate threshold in 2020--2022 and further below in 2018--2019."))
 print("second-revision tables written")
 
 # ---- third revision: block bootstrap column, elasticity appendix table ----
 bb = pd.read_csv(f"{OUT}/rev3_block_bootstrap.csv"); rb = pd.read_csv(f"{OUT}/rev2_robustness.csv"); qt = pd.read_csv(f"{OUT}/rev2_quantities.csv")
 m3 = rb.merge(qt[["notch", "B_over_N_pct", "b_quantile_corrected"]], on="notch").merge(bb[["notch", "block_boot_se"]], on="notch")
-rows = [(lab(r.notch), f"{r.b_base:.2f}", f"{r.block_boot_se:.2f}", f"{r.b_quantile_corrected:.2f}", f"{r.b_win10:.2f}", f"{r.b_win30:.2f}", "--" if pd.isna(r.b_pre_only) else f"{r.b_pre_only:.2f}", "--" if pd.isna(r.b_post_only) else f"{r.b_post_only:.2f}", f"{r.b_loo_min:.2f}--{r.b_loo_max:.2f}", f"{r.b_continuing:.2f}", f"{r.B_over_N_pct:.2f}") for _, r in m3.iterrows()]
-w("robust", tab(["Notch", "$b$", "block-boot.\\ SE", "quantile-corr.", "window $\\pm$10\\%", "$\\pm$30\\%", "pre only", "post only", "leave-one-out", "continuing", "$B/N_t$ (\\%)"], rows, "lrrrrrrrrrr",
+rows = [(lab(r.notch), f"{r.b_base:.2f}", f"{r.block_boot_se:.2f}", f"{r.b_win10:.2f}", f"{r.b_win30:.2f}", f"{r.b_loo_min:.2f}--{r.b_loo_max:.2f}", f"{r.B_over_N_pct:.2f}") for _, r in m3.iterrows()]
+w("robust", tab(["Notch", "$b$", "Block-bootstrap SE", "Window $\\pm$10\\%", "Window $\\pm$30\\%", "Leave-one-out range", "$B/N_t$ (\\%)"], rows, "lrrrrrr",
     "Robustness of the difference-in-bunching estimates", "tab:robust",
-    "Baseline: window $\\pm$20\\%, all admissible control years. Block-bootstrap SE: control years resampled with replacement and treated bin counts resampled, 500 draws. Quantile-corrected: control quantile shifted down by $B/N_t$. Pre/post: only control years before/after the treated year. Leave-one-out: range of $b$ dropping one control year at a time. Continuing: firms with positive revenue in $t-1$, $t$ and $t+1$. $B/N_t$: excess firms in the 5\\% region as a share of all filers with positive revenue in year $t$.", r"\footnotesize", landscape=True))
+    "Baseline: window $\\pm$20\\%, all admissible control years. Block-bootstrap SE: control years resampled with replacement and treated bin counts resampled, 500 draws. Leave-one-out: range of $b$ dropping one control year at a time. $B/N_t$: excess firms in the 5\\% region as a share of all filers with positive revenue in year $t$. Further checks in Appendix Table~\\ref{tab:robustextra}.", r"\small"))
+rows = [(lab(r.notch), f"{r.b_base:.2f}", f"{r.b_quantile_corrected:.2f}", "--" if pd.isna(r.b_pre_only) else f"{r.b_pre_only:.2f}", "--" if pd.isna(r.b_post_only) else f"{r.b_post_only:.2f}", f"{r.b_continuing:.2f}", f"{int(r.n_continuing):,}", f"{r.jackknife_se:.2f}") for _, r in m3.iterrows()]
+w("robustextra", tab(["Notch", "$b$", "Quantile-corrected", "Pre-years only", "Post-years only", "Continuing firms", "$n$ continuing", "Jackknife SE"], rows, "lrrrrrrr",
+    "Further robustness checks of the difference-in-bunching estimates", "tab:robustextra",
+    "Quantile-corrected: control quantile shifted down by $B/N_t$. Pre/post: only control years before/after the treated year. Continuing: firms with positive revenue in $t-1$, $t$ and $t+1$. Jackknife SE over control years.", r"\small"))
 el = pd.read_csv(f"{OUT}/rev3_elasticity.csv"); el = el[el.margin_basis == "median buncher margin"]
 def fmt(x): return x if isinstance(x, str) else f"{x:.3f}"
 rows = [(lab(r.notch), f"{r.tau*100:.0f}\\%", f"{r.margin:.3f}", f"{r['dt']*100:+.2f}", f"{r.dz_from_b_pct:.2f}", fmt(r.e_from_b), "--" if pd.isna(r.dz_hole_pct) else f"{r.dz_hole_pct:.0f}", fmt(r.e_from_hole) if isinstance(r.e_from_hole, str) else f"{float(r.e_from_hole):.2f}") for _, r in el.iterrows()]
@@ -157,7 +161,7 @@ d = pd.read_csv(f"{OUT}/diff_in_bunching.csv"); c = pd.read_csv(f"{OUT}/diff_in_
 rows = [(lab(r.notch), f"{r.location_lei/1e6:.3f}", f"{r.firms_in_window:,}", f"{r.b_diff:.2f} ({r.boot_se:.2f})", f"{r.missing_mass_above:.2f}", f"{r.excess_firms_5pct:,}", f"{r.excess_share_5pct:.1f}", f"{r.excess_firms_3pct:,}--{r.excess_firms_8pct:,}") for _, r in m.iterrows()]
 w("dib", tab(["Notch", "Location (M lei)", "Firms in window", "$b$ (SE)", "$m$", "Excess firms", "\\% of window", "Range 3--8\\%"], rows, "llrrrrrr",
     "Difference-in-bunching estimates", "tab:dib",
-    "Location = EUR threshold $\\times$ BNR rate at the close of the previous year (in-year notches; the 2025 year-end notch at the end-2024 rate). Window $\\pm$20\\%, bins 1\\% of the location. Control years are listed in Appendix Table~\\ref{tab:controls}. $b$ = excess mass in the five bins below the notch in units of counterfactual firms per bin; $m$ = the same over the five bins above, negative meaning a deficit (a hole) and positive an excess; SE from 300 multinomial bootstrap draws. Excess firms = excess in the 5\\% region below the notch, with its range over 3\\% and 8\\% regions.", r"\footnotesize", landscape=True))
+    "Location = EUR threshold $\\times$ BNR rate at the close of the previous year (in-year notches; the 2025 year-end notch at the end-2024 rate). Window $\\pm$20\\%, bins 1\\% of the location. Control years are listed in Appendix Table~\\ref{tab:controls}. $b$ = excess mass in the five bins below the notch in units of counterfactual firms per bin; $m$ = the same over the five bins above, negative meaning a deficit (a hole) and positive an excess; SE from 300 multinomial bootstrap draws. Excess firms = excess in the 5\\% region below the notch, with its range over 3\\% and 8\\% regions.", r"\footnotesize"))
 rows = [(lab(r.notch), ctrl(r.controls), f"{r['quantile']:.3f}") for _, r in d.iterrows()]
 w("controls", tab(["Notch", "Admissible control years", "Quantile of notch"], rows, "lll", "Control years used for each notch", "tab:controls", "A year is admissible if no known notch lies within 25\\% of the revenue at the same quantile in that year."))
 print("fourth-revision tables written")
