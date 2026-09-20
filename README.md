@@ -79,7 +79,7 @@ responsible for the content.
 ## Citation
 
 Siminiuc, D. (2026). Bunching at a Moving Threshold: Firm Responses to Romania's Micro-Enterprise Tax, 2014–2025.
-Working paper. Replication package: [DOI to be added].
+Working paper. Replication package: https://github.com/simdenis/romania-micro-enterprise-bunching (data DOI to be added).
 
 ## License
 
