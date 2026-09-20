@@ -4,7 +4,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); OUT = f"{ROO
 os.makedirs(T, exist_ok=True)
 def w(name, s): open(f"{T}/{name}.tex", "w").write(s)
 def tab(cols, rows, align, caption, label, note=None, size=r"\small", landscape=False, resize=True):
-    s = ([r"\begin{landscape}"] if landscape else []) + [r"\begin{table}[tbp]\centering", size, rf"\caption{{{caption}}}\label{{{label}}}", ((r"\resizebox{\linewidth}{!}{%" + "\n") if resize else r"\setlength{\tabcolsep}{3.5pt}" + "\n") + rf"\begin{{tabular}}{{{align}}}\toprule", " & ".join(cols) + r" \\ \midrule"]
+    s = ([r"\begin{landscape}"] if landscape else []) + [r"\begin{table}[!tbp]\centering", size, rf"\caption{{{caption}}}\label{{{label}}}", ((r"\resizebox{\linewidth}{!}{%" + "\n") if resize else r"\setlength{\tabcolsep}{3.5pt}" + "\n") + rf"\begin{{tabular}}{{{align}}}\toprule", " & ".join(cols) + r" \\ \midrule"]
     s += [" & ".join(str(x) for x in r) + r" \\" for r in rows]
     s += [r"\bottomrule\end{tabular}" + ("}" if resize else "")]
     if note: s += [rf"\begin{{minipage}}{{0.95\linewidth}}\vspace{{2pt}}\footnotesize {note}\end{{minipage}}"]
