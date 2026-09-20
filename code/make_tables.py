@@ -4,7 +4,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); OUT = f"{ROO
 os.makedirs(T, exist_ok=True)
 def w(name, s): open(f"{T}/{name}.tex", "w").write(s)
 def tab(cols, rows, align, caption, label, note=None, size=r"\small", landscape=False):
-    s = ([r"\begin{landscape}"] if landscape else []) + [r"\begin{table}[htbp]\centering", size, rf"\caption{{{caption}}}\label{{{label}}}", (r"\resizebox{\linewidth}{!}{%" + "\n" + rf"\begin{{tabular}}{{{align}}}\toprule"), " & ".join(cols) + r" \\ \midrule"]
+    s = ([r"\begin{landscape}"] if landscape else []) + [r"\begin{table}[tbp]\centering", size, rf"\caption{{{caption}}}\label{{{label}}}", (r"\resizebox{\linewidth}{!}{%" + "\n" + rf"\begin{{tabular}}{{{align}}}\toprule"), " & ".join(cols) + r" \\ \midrule"]
     s += [" & ".join(str(x) for x in r) + r" \\" for r in rows]
     s += [r"\bottomrule\end{tabular}}"]
     if note: s += [rf"\begin{{minipage}}{{0.95\linewidth}}\vspace{{2pt}}\footnotesize {note}\end{{minipage}}"]
@@ -68,18 +68,18 @@ w("emptrans", tab(["Year $t$", "Firms with 0 employees in $t$", "1 employee in $
     "Transitions of zero-employee firms (revenue below \\euro{}500,000) into the next year, conditional on filing in both years (\\%)", "tab:emptrans", "The one-employee condition was enacted in July 2022 and tested at 31 December 2022. Filing coverage differs across years because some annual files are early uploads, so shares are conditional on a statement being present in $t+1$."))
 
 # splitting pooled
-A = pd.read_csv(f"{OUT}/splitting_by_position.csv")
+A = pd.read_csv(f"{OUT}/splitting_by_position.csv"); CZ = pd.read_csv(f"{OUT}/splitting_clustered_z.csv")
 def pooled(y0, y1, col, g):
     dd = A[(A.year >= y0) & (A.year <= y1) & (A.group == g)]; n = dd.firms.sum(); return (dd[col] / 100 * dd.firms).sum() / n, n
 rows = []
-for col, name in [("pct_sib_new", "Administrator registered another firm in prior 18 months"), ("pct_addr_new", "Another firm registered at the same address in prior 18 months"), ("pct_any_sib", "Administrator runs another firm (any date)")]:
-    for y0, y1 in [(2018, 2023), (2015, 2017)]:
-        vals = [pooled(y0, y1, col, g) for g in ["bunchers (0-5% below)", "just above (0-10%)", "control (10-25% below)", "well above (25-100%)"]]
-        p1, n1 = vals[0]; p2, n2 = vals[1]; z = (p1 - p2) / np.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
-        rows.append((name if y0 == 2018 else "", f"{y0}--{y1}", *[f"{v[0]*100:.2f}" for v in vals], f"{z:.1f}"))
-w("split", tab(["Measure", "Years", "Bunchers (0--5\\% below)", "Just above (0--10\\%)", "10--25\\% below", "25--100\\% above", "$z$"], rows, "llrrrrr",
-    "Sibling-firm indicators by position relative to the threshold, SRLs", "tab:split",
-    "Pooled shares, \\%. $z$ tests bunchers against firms just above the threshold (unclustered; clustered by firm, $z = 4.3$ and $8.6$). Standardising the just-above group to the bunchers' age distribution gives 2.70 versus 2.20 on the administrator measure and 12.26 versus 10.23 on the address measure (Appendix Table~\\ref{tab:splitage}). Administrators as recorded in the ONRC snapshot of 2 September 2026; persons administering more than 50 firms and addresses hosting more than 20 firms excluded.", r"\footnotesize"))
+for col, key, name in [("pct_sib_new", "sib_new", "Administrator registered another firm in prior 18 months"), ("pct_addr_new", "addr_new", "Another firm registered at the same address in prior 18 months"), ("pct_any_sib", "any_sib", "Administrator runs another firm (any date)")]:
+    vals = [pooled(2018, 2023, col, g) for g in ["bunchers (0-5% below)", "just above (0-10%)", "control (10-25% below)", "well above (25-100%)"]]
+    z = CZ[(CZ.years == "2018--2023") & (CZ.measure == key)].z_clustered.item()
+    rows.append((name, *[f"{v[0]*100:.2f}" for v in vals], f"{z:.1f}"))
+early = {r.measure: r for _, r in CZ[CZ.years == "2015--2017"].iterrows()}
+w("split", tab(["Measure", "Bunchers (0--5\\% below)", "Just above (0--10\\%)", "10--25\\% below", "25--100\\% above", "$z$"], rows, "lrrrrr",
+    "Sibling-firm indicators by position relative to the threshold, SRLs, pooled 2018--2023", "tab:split",
+    f"Pooled shares, \\%. $z$ tests bunchers against firms just above the threshold with standard errors clustered by firm. At the small ceilings of 2015--2017 the corresponding shares for bunchers and firms just above are {early['sib_new'].bunchers:.2f} versus {early['sib_new'].just_above:.2f} ($z = {early['sib_new'].z_clustered:.1f}$) on the administrator measure, {early['addr_new'].bunchers:.2f} versus {early['addr_new'].just_above:.2f} ($z = {early['addr_new'].z_clustered:.1f}$) on the address measure and {early['any_sib'].bunchers:.2f} versus {early['any_sib'].just_above:.2f} ($z = {early['any_sib'].z_clustered:.1f}$) on the any-date measure. Standardising the just-above group to the bunchers' age distribution gives 2.70 versus 2.20 on the administrator measure and 12.26 versus 10.23 on the address measure (Appendix Table~\\ref{{tab:splitage}}). Administrators as recorded in the ONRC snapshot of 2 September 2026; persons administering more than 50 firms and addresses hosting more than 20 firms excluded.", r"\small"))
 print("tables written:", sorted(os.listdir(T)))
 
 # ---- revision tables ----
@@ -110,9 +110,9 @@ w("robust", tab(["Notch", "$b$", "quantile-corrected", "window $\\pm$10\\%", "$\
     "Robustness of the difference-in-bunching estimates", "tab:robust",
     "Baseline: window $\\pm$20\\%, all admissible control years. Quantile-corrected: control quantile shifted down by $B/N_t$. Pre/post: only control years before/after the treated year. Leave-one-out: range of $b$ dropping one control year at a time; jackknife SE over control years. Continuing firms: firms with positive revenue in $t-1$, $t$ and $t+1$. $B/N_t$: excess firms in the 5\\% region as a share of all filers with positive revenue in year $t$.", r"\footnotesize"))
 lf = pd.read_csv(f"{OUT}/rev2_lei_modal_fine.csv")
-rows = [(int(r.year), f"{int(r.thr_prev):,}", f"{int(r.thr_cur):,}", r.modal_5k_bin, int(r.firms_5k), f"{int(r.dist_5k_to_prev):+,}", f"{int(r.thr_cur - r.thr_prev):+,}") for _, r in lf.iterrows()]
-w("lei", tab(["Year", "\\euro{}1M at prev.\\ year-end rate", "\\euro{}1M at current year-end rate", "Modal 5,000-lei bin", "Firms in it", "Bin centre minus prev.-rate threshold", "Current minus prev.-rate threshold"], rows, "lrrlrrr",
-    "Location of the revenue spike in lei, 2018--2022", "tab:lei", "Modal 5,000-lei bin within 60,000 lei of either candidate threshold. At 1,000-lei resolution the modal bins hold only 16 to 31 firms and are noisier; they lie 2,000 to 5,000 lei below the previous-rate threshold in 2020--2022 and further below in 2018--2019."))
+rows = [(int(r.year), f"{int(r.thr_prev):,}", r.modal_5k_bin, int(r.firms_5k), f"{int(r.dist_5k_to_prev):+,}", f"{int(r.thr_cur - r.thr_prev):+,}") for _, r in lf.iterrows()]
+w("lei", tab(["Year", "\\euro{}1M at prev.\\ year-end rate (lei)", "Modal 5,000-lei bin", "Firms in it", "Bin centre minus threshold", "Current-rate minus prev.-rate threshold"], rows, "lrlrrr",
+    "Location of the revenue spike in lei, 2018--2022", "tab:lei", "Modal 5,000-lei bin within 60,000 lei of either candidate threshold. The last column gives the lei value of \\euro{}1M at the current year-end rate minus its value at the previous year-end rate (the dotted line in Figure~\\ref{fig:lei}). At 1,000-lei resolution the modal bins hold only 16 to 31 firms and are noisier; they lie 2,000 to 5,000 lei below the previous-rate threshold in 2020--2022 and further below in 2018--2019.", r"\footnotesize"))
 print("second-revision tables written")
 
 # ---- third revision: block bootstrap column, elasticity appendix table ----

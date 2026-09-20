@@ -45,7 +45,7 @@ Section~\ref{sec:inst} describes the regime, Section~\ref{sec:data} the data, Se
 
 The micro-enterprise income tax (\emph{impozitul pe veniturile microîntreprinderilor}), Title III of the Fiscal Code (Law 227/2015) and before 2016 Title IV$^1$ of Law 571/2003, replaces the 16 percent profit tax with a tax on revenue for companies meeting a set of conditions, of which the main one is that revenue in the previous fiscal year was below a ceiling set in euro. Table~\ref{tab:thresholds} gives the ceiling and rates and Table~\ref{tab:conditions} the side conditions by year of revenue; Appendix~\ref{app:legal} gives the acts.
 
-\begin{table}[htbp]\centering\small
+\begin{table}[tbp]\centering\small
 \caption{Micro-enterprise regime: ceiling and rates by year of revenue}\label{tab:thresholds}
 \begin{tabular}{lll}\toprule
 Revenue year & Ceiling (EUR) & Rate on revenue \\ \midrule
@@ -60,7 +60,7 @@ Revenue year & Ceiling (EUR) & Rate on revenue \\ \midrule
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]\centering\small
+\begin{table}[tbp]\centering\small
 \caption{Micro-enterprise regime: side conditions by year of revenue}\label{tab:conditions}
 \begin{tabular}{p{2.2cm}p{12.5cm}}\toprule
 Years & Conditions \\ \midrule
@@ -115,7 +115,7 @@ with $B$ the five bins immediately below the notch, and the missing mass $m_t$ i
 
 Within 2018--2022 the euro ceiling was constant at \euro{}1,000,000 but its lei value rose from 4.66 to 4.95 million lei as the leu depreciated. Figure~\ref{fig:lei} shows the revenue distribution in lei with 10,000-lei bins. The spike moves with the ceiling each year. Table~\ref{tab:lei} locates the modal 5,000-lei bin: in every year its centre lies 1,400 to 5,600 lei below the ceiling at the previous year-end rate, while the ceiling at the current year-end rate is 80,000 to 115,000 lei further right in 2019 to 2021 and within 5,000 lei in 2018 and 2022, when the leu barely moved. Firms target the in-year rule, which is also the lower of the two lei values, so the two explanations coincide. Nobody rounds revenue to 4,779,300 lei; a spike at that value that moves to 4,869,400 lei the next year is not round-number reporting or an accounting convention.
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.85\textwidth]{lei_tracking_1M_2018_2022.png}
 \caption{Total revenue in lei around \euro{}1,000,000, 2018--2022, 10,000-lei bins. Dashed: ceiling at the previous year-end rate; dotted: at the current year-end rate.}\label{fig:lei}
 \end{figure}
@@ -126,7 +126,7 @@ Within 2018--2022 the euro ceiling was constant at \euro{}1,000,000 but its lei 
 
 Figure~\ref{fig:panels} shows a spike in the bin immediately below the ceiling in every year. It is at \euro{}65,000 in 2014 and 2015, moves to \euro{}100,000 in 2016 and \euro{}500,000 in 2017, sits at \euro{}1,000,000 from 2018 to 2022, returns to \euro{}500,000 in 2023 and 2024 and moves to \euro{}250,000 in 2025. In 2014 and 2015 a second, taller spike is visible at about \euro{}49,000, which is 220,000 lei, the VAT threshold of the time. In 2014 the spike straddles the computed notch rather than sitting below it, consistent with the whole-year re-taxation rule then in force and with the base issue noted above.
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{bunching_panels.png}
 \caption{Total revenue around the micro-enterprise ceiling, 2014--2025, converted at the BNR rate at the close of the previous year. Dashed: ceiling; dotted: ceiling at the current year-end rate. In the 2014 and 2015 panels the red line is a polynomial counterfactual of degree 5 excluding three bins on each side, shown to make the point that it passes through the VAT spike, which lies inside its fitting window.}\label{fig:panels}
 \end{figure}
@@ -144,7 +144,7 @@ For comparison, a polynomial counterfactual of the kind used by \citet{chetty201
 \input{tables/dib}
 \input{tables/robust}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{diff_in_bunching_4panel.png}
 \caption{Treated-year density (bars) and same-quantile control density (line) around four notches, bins of 1 percent of the notch location. All fourteen notches in Appendix Figure~\ref{fig:dibfull}.}\label{fig:dib}
 \end{figure}
@@ -181,7 +181,7 @@ The move of the VAT threshold also uncovers the \euro{}60,000 boundary between t
 \input{tables/vat}
 \input{tables/boundary60k}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.8\textwidth]{boundary_60k_2023_2025.png}
 \caption{Total revenue from 250,000 to 450,000 lei, 2023--2025, 1,000-lei bins, with the \euro{}60,000 rate boundary and the VAT thresholds.}\label{fig:boundary60k}
 \end{figure}
@@ -197,9 +197,9 @@ From 1 January 2023 a micro-enterprise must have at least one employee, tested a
 \FloatBarrier
 \subsection{Splitting}
 
-Table~\ref{tab:split} compares limited-liability companies in the 5 percent below the ceiling with firms just above it, which are of the same size, and with firms further below and well above. Pooled over 2018--2023, 2.7 percent of bunchers have an administrator who registered another firm in the preceding eighteen months, against 2.0 percent of firms just above ($z = 4.3$ with standard errors clustered by firm) and 1.7 percent further below; 12.2 percent have another firm newly registered at their address, against 9.2 and 8.7 percent ($z = 8.6$). Dropping administrators without a birth date, whose key may merge namesakes, gives 2.4 against 1.7 percent, the same ratio. The share whose administrator runs any other firm, regardless of date, is similar for bunchers and firms well above the ceiling, so the timing measures rather than the level carry the information.
+Table~\ref{tab:split} compares limited-liability companies in the 5 percent below the ceiling with firms just above it, which are of the same size, and with firms further below and well above. Pooled over 2018--2023, 2.7 percent of bunchers have an administrator who registered another firm in the preceding eighteen months, against 2.0 percent of firms just above ($z = 4.3$, standard errors clustered by firm throughout) and 1.7 percent further below; 12.2 percent have another firm newly registered at their address, against 9.2 and 8.7 percent ($z = 8.6$). Dropping administrators without a birth date, whose key may merge namesakes, gives 2.4 against 1.7 percent, the same ratio. The share whose administrator runs any other firm, regardless of date, differs little between bunchers and firms just above ($z = 2.6$) and is similar for bunchers and firms well above the ceiling, so the timing measures rather than the level carry the information.
 
-Bunchers are also younger than firms just above, 13 percent under three years old against 8 percent, and a recently registered sibling is more likely for a young firm. Comparing within age bands (Appendix Table~\ref{tab:splitage}), bunchers exceed the just-above group in every band, and standardising to the bunchers' age distribution the premium is 23 percent on the administrator measure and 20 percent on the address measure. At the small ceilings of 2015--2017 the administrator measure shows no difference.
+Bunchers are also younger than firms just above, 13 percent under three years old against 8 percent, and a recently registered sibling is more likely for a young firm. Comparing within age bands (Appendix Table~\ref{tab:splitage}), bunchers exceed the just-above group in every band, and standardising to the bunchers' age distribution the premium is 23 percent on the administrator measure and 20 percent on the address measure. At the small ceilings of 2015--2017 the administrator measure shows no difference ($z = 1.5$, Table~\ref{tab:split} note).
 
 The 2024 rules provide two checks. From 2023 a person could hold over 25 percent in at most three micro-enterprises, and from 2024 in one, while the ceiling began to be tested on the combined revenue of linked enterprises. If the premium reflects splitting to stay under the ceiling, it should fall once splitting no longer helps, and combined revenue should itself start to bunch. The first prediction holds on the administrator measure: bunchers and firms just above are at 1.4 percent each in 2024, against 2.0 and 1.6 in 2023; a gap remains on the address measure. The second does not: the combined revenue of firms sharing an administrator shows no excess mass at \euro{}500,000 in 2024, and firms inside such groups bunch individually at the same rate as single firms (Appendix Table~\ref{tab:groups}). Cohorts of firms that lost the regime when the ceiling fell registered new firms at the same rate relative to the band below as placebo cohorts, so whatever splitting there is serves to stay under the line rather than to react to losing the regime.
 
@@ -257,27 +257,27 @@ Table~\ref{tab:controls} lists the admissible control years for each notch with 
 \clearpage
 \section{Additional figures}\label{app:figures}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{diff_in_bunching.png}
 \caption{Treated-year density (bars) and same-quantile control density (line) around each of the fourteen notches, bins of 1 percent of the notch location.}\label{fig:dibfull}
 \end{figure}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{vat_threshold_panels.png}
 \caption{Net turnover around the VAT registration threshold, 2,000-lei bins, with a polynomial counterfactual.}\label{fig:vat}
 \end{figure}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{anticipation_checks.png}
 \caption{Revenue around announced or enacted future ceilings and the new VAT threshold, with placebo years. Top: 2022 revenue at \euro{}500,000, announced in July 2022 for 2023 status and deferred in December 2022, with 2021 placebo. Middle: 2025 revenue at \euro{}100,000 at the end-2024 rate, enacted December 2024 for 2026 status, with 2024 placebo. Bottom: 2025 turnover at 395,000 lei with 2024 placebo. Polynomial counterfactuals for reference.}\label{fig:twonotch}
 \end{figure}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.85\textwidth]{lei_tracking_500k_2023_2024.png}
 \caption{Total revenue in lei around \euro{}500,000, 2023 and 2024, 5,000-lei bins. The grey line marks 2,500,000 lei, the nearest round number.}\label{fig:lei500}
 \end{figure}
 
-\begin{figure}[htbp]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.8\textwidth]{employee_margin.png}
 \caption{Share of firms with revenue below \euro{}500,000 reporting zero, one and two employees, 2019--2025.}\label{fig:emp}
 \end{figure}
