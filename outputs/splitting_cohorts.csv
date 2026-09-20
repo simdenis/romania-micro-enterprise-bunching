@@ -1,0 +1,11 @@
+cohort_year,band,eur_from,eur_to,firms,pct_admin_new_firm_next18m,pct_same_addr_new_firm
+2022,affected band,500000,1000000,31615,1.62,9.99
+2022,unaffected band (half the size),250000,500000,46101,1.08,9.07
+2019,affected band,500000,1000000,25498,1.64,6.98
+2019,unaffected band (half the size),250000,500000,37955,1.2,6.08
+2020,affected band,500000,1000000,25235,1.93,8.32
+2020,unaffected band (half the size),250000,500000,37462,1.34,7.31
+2024,affected band,250000,500000,54836,1.5,7.74
+2024,unaffected band (half the size),125000,250000,72399,1.05,7.55
+2021,affected band,250000,500000,39183,1.21,8.27
+2021,unaffected band (half the size),125000,250000,51922,0.89,8.15

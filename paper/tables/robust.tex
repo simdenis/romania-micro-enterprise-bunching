@@ -1,0 +1,25 @@
+\begin{landscape}
+\begin{table}[htbp]\centering
+\footnotesize
+\caption{Robustness of the difference-in-bunching estimates}\label{tab:robust}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrrrrrr}\toprule
+Notch & $b$ & block-boot.\ SE & quantile-corr. & window $\pm$10\% & $\pm$30\% & pre only & post only & leave-one-out & continuing & $B/N_t$ (\%) \\ \midrule
+2014: in-year, \euro{}65,000 & 1.15 & 0.08 & 1.14 & 0.74 & 0.78 & -- & 1.15 & 1.13--1.18 & 1.15 & 0.20 \\
+2015: in-year, \euro{}65,000 & 1.71 & 0.08 & 1.70 & 1.36 & 1.55 & -- & 1.71 & 1.69--1.72 & 1.71 & 0.30 \\
+2016: in-year, \euro{}100,000 & 1.56 & 0.11 & 1.56 & 1.23 & 1.70 & 1.30 & 1.63 & 1.54--1.64 & 1.45 & 0.25 \\
+2017: in-year, \euro{}500,000 & 0.76 & 0.12 & 0.77 & 0.62 & 0.79 & 0.62 & 0.85 & 0.73--0.79 & 0.72 & 0.06 \\
+2018: in-year, \euro{}1,000,000 & 1.41 & 0.14 & 1.36 & 1.20 & 1.46 & 1.44 & 1.37 & 1.38--1.43 & 1.35 & 0.07 \\
+2019: in-year, \euro{}1,000,000 & 1.67 & 0.14 & 1.75 & 1.27 & 1.87 & 1.64 & 1.70 & 1.63--1.71 & 1.58 & 0.09 \\
+2020: in-year, \euro{}1,000,000 & 1.75 & 0.16 & 1.87 & 1.35 & 1.93 & 1.64 & 1.90 & 1.71--1.83 & 1.67 & 0.09 \\
+2021: in-year, \euro{}1,000,000 & 2.15 & 0.15 & 2.19 & 1.59 & 2.39 & 2.23 & 2.04 & 2.10--2.20 & 2.08 & 0.13 \\
+2022: in-year, \euro{}1,000,000 & 1.92 & 0.14 & 1.97 & 1.58 & 2.15 & 1.82 & 2.05 & 1.87--1.97 & 1.77 & 0.12 \\
+2023: in-year, \euro{}500,000 & 2.99 & 0.11 & 2.99 & 2.19 & 3.35 & 3.02 & 2.82 & 2.97--3.02 & 2.80 & 0.30 \\
+2024: in-year, \euro{}500,000 & 1.62 & 0.09 & 1.65 & 1.26 & 1.78 & 1.64 & 1.52 & 1.58--1.64 & 1.58 & 0.15 \\
+2025: in-year, \euro{}250,000 & 0.73 & 0.08 & 0.72 & 0.57 & 0.78 & 0.73 & -- & 0.71--0.75 & 0.61 & 0.09 \\
+2022: announced, \euro{}500,000 & 0.80 & 0.10 & 0.79 & 0.60 & 0.89 & 0.80 & 0.83 & 0.78--0.82 & 0.83 & 0.07 \\
+2025: year-end, \euro{}100,000 & 1.47 & 0.07 & 1.47 & 1.02 & 1.11 & 1.47 & -- & 1.44--1.50 & 1.43 & 0.28 \\
+\bottomrule\end{tabular}}
+\begin{minipage}{0.95\linewidth}\vspace{2pt}\footnotesize Baseline: window $\pm$20\%, all admissible control years. Block-bootstrap SE: control years resampled with replacement and treated bin counts resampled, 500 draws. Quantile-corrected: control quantile shifted down by $B/N_t$. Pre/post: only control years before/after the treated year. Leave-one-out: range of $b$ dropping one control year at a time. Continuing: firms with positive revenue in $t-1$, $t$ and $t+1$. $B/N_t$: excess firms in the 5\% region as a share of all filers with positive revenue in year $t$.\end{minipage}
+\end{table}
+\end{landscape}

@@ -1,0 +1,263 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage{setspace}
+\usepackage[hidelinks]{hyperref}
+\usepackage[round]{natbib}
+\usepackage{caption}
+\usepackage{pdflscape}
+\usepackage{placeins}
+\renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.9}\renewcommand{\textfraction}{0.05}\renewcommand{\floatpagefraction}{0.8}
+\captionsetup{font=small,labelfont=bf}
+\graphicspath{{figures/}}
+\onehalfspacing
+
+\title{Bunching at a Moving Threshold:\\ Firm Responses to Romania's Micro-Enterprise Tax, 2014--2025}
+\author{Denis Siminiuc\thanks{Draft of \today. Data: Ministry of Finance, ANAF and ONRC open data via data.gov.ro. The replication package (pipeline, harmonised panel with hashed identifiers, legal timeline) is at [repository URL and DOI to be added before posting]; it contains no names, birth dates or addresses. The manuscript, code and legal timeline were drafted with substantial assistance from a large language model (Anthropic Claude), including the initial text of every section, the analysis scripts and simulated referee reports; the author verified all legal references against primary sources and all numerical claims against the data, and is responsible for the content. Comments welcome.}}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Romanian companies below a euro-denominated revenue ceiling pay 1 to 3 percent of revenue instead of 16 percent of profit. The ceiling moved six times between 2013 and 2026. Using all annual financial statements, 9.6 million firm-years, we show three things. First, reported revenue spikes just below the ceiling in every year, the spike follows the ceiling as it moves, and within a fixed euro ceiling it sits within a few thousand lei of the ceiling's value at the previous year-end exchange rate and moves with the rate. Second, because the ceiling moved, the density at each notch in years when no ceiling was there is a counterfactual that needs no polynomial. This difference-in-bunching estimator returns zero at 77 placebo locations and excess mass of 2 to 8 percent of firms within 20 percent of the ceiling at every notch, yet only 0.06 to 0.30 percent of all filers: bunching is large locally and trivial in aggregate, and the regime's fiscal cost lies with the intramarginal firms. Third, the response is concentrated in high-margin service sectors, reported margins move in the predicted direction when firms are switched between regimes, a 2023 employee condition doubled the rate at which zero-employee firms took on one employee in the year it was enacted, and bunching is correlated with, though not shown to be caused by, the registration of sibling firms.
+\end{abstract}
+
+\section{Introduction}
+
+Dual-regime business tax systems, which tax small firms on turnover and larger firms on profit, exist in most emerging economies and several EU member states \citep{sharma2025dual, kanbur2014, dharmapala2011}. The size threshold between the regimes is a notch: crossing it changes the tax base from revenue to profit and, for a firm whose margin exceeds the ratio of the two rates, raises the tax bill discretely. Responses to such notches have been estimated at VAT thresholds in the United Kingdom \citep{liu2021vat}, Finland \citep{harju2019vat} and Spain \citep{almunia2018}, at turnover-tax and corporate-tax discontinuities in Pakistan \citep{kleven2013}, Armenia \citep{asatryan2016}, South Africa \citep{boonzaaier2019} and Costa Rica \citep{bachas2021}. In most of these settings the threshold moves rarely or only with indexation, so the counterfactual density at the notch is extrapolated from the density away from it, usually with a polynomial. \citet{blomquist2021} show that this extrapolation is not identified without shape restrictions and that the estimates depend on them. \citet{best2018} use the introduction of a notch to compare the same location before and after, and \citet{marx2024} exploits panel variation.
+
+Romania is a setting in which the threshold moves. Its micro-enterprise regime taxes revenue at 1 to 3 percent for companies with annual revenue below a euro-denominated ceiling, and the ceiling changed six times between 2013 and 2026: \euro{}65,000 until 2015, \euro{}100,000 in 2016, \euro{}500,000 in 2017, \euro{}1,000,000 from 2018 to 2022, \euro{}500,000 in 2023 and 2024, \euro{}250,000 in 2025 and \euro{}100,000 from 2026. Every location that was ever a notch was, in other years, an ordinary point of the revenue distribution. We use that variation descriptively and econometrically, and we use the accompanying changes in side conditions, the employee requirement and the linked-enterprise rule, to look at the channels.
+
+The paper makes three points. First, the spike in reported revenue follows the legal ceiling up and down and, within a fixed euro ceiling, tracks the lei value at the previous year-end exchange rate to within a few thousand lei a year. That settles the round-number objection: a spike at 4,779,300 lei that moves to 4,869,400 lei the next year is not an accounting convention. When a future ceiling has been enacted, or announced and then withdrawn, a second spike appears at it. Second, the density at each notch location in years without a threshold there provides a counterfactual under an assumption we state and test. The estimator gives zero at 77 placebo locations and excess mass of 2 to 8 percent of the firms within 20 percent of each notch, with block-bootstrap standard errors of 0.07 to 0.16 in the excess-mass statistic. In aggregate, however, the excess is 0.06 to 0.30 percent of all filers. Bunching is large relative to the local density and small relative to the economy; the fiscal cost of the regime, and the policy debate around it \citep{ban2023, imf2025, cf2024}, concern the intramarginal firms, not the threshold. Third, the channels. Excess mass is two to three times higher in professional, administrative, health and information services than in trade and transport, and bunchers in those sectors report margins of 30 to 40 percent. When the 2018 ceiling increase moved firms onto the revenue tax their reported margins rose by 0.7 points relative to firms left on profit tax, and when the 2023 cut moved firms back margins fell by 1 to 2 points; the regime changes what firms report, not only where they sit, as \citet{bachas2021} find for Costa Rica. A 2023 employee condition doubled the rate at which zero-employee firms took on exactly one employee in the year it was enacted. Firms at the ceiling are more likely to have a newly registered sibling firm, but combined revenue of commonly administered firms does not bunch, so we treat splitting as a correlation. Section~\ref{sec:margins} takes each channel in turn.
+
+Section~\ref{sec:inst} describes the regime, Section~\ref{sec:data} the data, Section~\ref{sec:method} the estimator, Section~\ref{sec:results} the main results and Section~\ref{sec:margins} the channels. Section~\ref{sec:conc} concludes.
+
+\section{Institutional background}\label{sec:inst}
+
+The micro-enterprise income tax (\emph{impozitul pe veniturile microîntreprinderilor}), Title III of the Fiscal Code (Law 227/2015) and before 2016 Title IV$^1$ of Law 571/2003, replaces the 16 percent profit tax with a tax on revenue for companies meeting a set of conditions, of which the main one is that revenue in the previous fiscal year was below a ceiling set in euro. The regime was mandatory for eligible firms from February 2013 to 2022, with opt-outs for firms above a capital threshold (\euro{}25,000 for new firms from 2013, 45,000 lei from 2017, and 45,000 lei with at least two employees from April 2018), and became optional from 2023, when a firm leaving the regime also lost the right to return. Table~\ref{tab:thresholds} lists the ceiling and rates and Table~\ref{tab:conditions} the side conditions by year of revenue; Appendix~\ref{app:legal} gives the acts.
+
+\begin{table}[htbp]\centering\small
+\caption{Micro-enterprise regime: ceiling and rates by year of revenue}\label{tab:thresholds}
+\begin{tabular}{lll}\toprule
+Revenue year & Ceiling (EUR) & Rate on revenue \\ \midrule
+2013--2015 & 65,000 & 3\% \\
+2016 & 100,000 & 1\% ($\ge$ 2 employees), 2\% (1), 3\% (none) \\
+2017 & 500,000 (from 1 Feb.) & 1\% ($\ge$ 1 employee), 3\% (none) \\
+2018--2022 & 1,000,000 & 1\% ($\ge$ 1 employee), 3\% (none) \\
+2023 & 500,000 & 1\% \\
+2024 & 500,000 & 1\% up to \euro{}60,000; 3\% above or in listed activities \\
+2025 & 250,000 & 1\% up to \euro{}60,000; 3\% above or in listed activities \\
+2026 & 100,000 & 1\% \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering\small
+\caption{Micro-enterprise regime: side conditions by year of revenue}\label{tab:conditions}
+\begin{tabular}{p{2.2cm}p{12.5cm}}\toprule
+Years & Conditions \\ \midrule
+2013--2015 & Mandatory. Consulting and management revenue at most 20\% (from 2014). Exceeding the ceiling in-year re-taxed the whole year. \\
+2016--2017 & Mandatory, capital-based opt-out. In-year exit from the quarter of crossing. Consulting cap retained. \\
+2018--2022 & Mandatory, opt-out for capital $\ge$ 45,000 lei with two employees (from April 2018). Consulting cap abolished. \\
+2023 & Optional; exit permanent. At least one employee. Consulting cap 20\%. A person holding over 25\% may be a shareholder in at most three micro-enterprises. Hospitality firms exempt from the ceiling. \\
+2024 & At most one micro-enterprise per person holding over 25\%. Ceiling tested on linked enterprises combined. Consulting cap reformulated. \\
+2025 & Consulting cap abolished. Status for 2026 tested on 2025 revenue against \euro{}100,000. \\
+2026 & Base changed to accounting turnover including linked enterprises. \\ \bottomrule
+\end{tabular}
+\end{table}
+
+Three features matter for what follows. The first is timing. Under the in-year rule, a micro-enterprise whose cumulated revenue exceeds the ceiling during year $t$ owes profit tax from that quarter (for 2013 to 2015, for the whole year), the ceiling being converted at the BNR rate at the close of year $t-1$. Under the year-end rule, status for year $t+1$ is set by revenue at 31 December of year $t$, converted at the rate at the close of year $t$. When the ceiling is unchanged the two rules place the notch a few thousand lei apart, and the in-year rule, which uses the earlier and lower rate, is the binding one in a depreciating currency. When a cut has been enacted for the following year a firm faces two notches. This happened in 2022, when Ordinance 16/2022 of July 2022 set \euro{}500,000 for 2023 status based on 2022 revenue, before Law 370/2022 of 20 December 2022 deferred the revenue test to 2023 revenue while keeping the employee and ownership conditions at 31 December 2022; and in 2025, when Ordinance 156/2024 of 31 December 2024 set \euro{}250,000 for 2025 and \euro{}100,000 for 2026 status based on 2025 revenue.
+
+The second feature is the tax base. The ceiling is tested on the taxable base of Article 53, which excludes a short list of items such as subsidies, provision reversals and, from 2021, dividends received. The statements report total revenue, which is weakly larger; for most small firms the excluded items are zero, but where they are not the firm's position relative to the ceiling is overstated, which biases the bunching region slightly to the right in our data. From 2026 the base is accounting turnover.
+
+The third is the set of side conditions in Table~\ref{tab:conditions}. From 2023 a micro-enterprise must have at least one employee, tested at 31 December of the previous year and defined as a full-time contract, part-time contracts summing to a full norm, or a paid mandate contract; from 2024 the ceiling is tested on the combined revenue of linked enterprises, defined by holdings over 25 percent; and in 2024 and 2025 a rate boundary at \euro{}60,000 separates the 1 and 3 percent rates, with software, hospitality, legal and medical activities taxed at 3 percent regardless.
+
+The VAT small-enterprise exemption is a separate notch on turnover as defined in Article 310(2), set in lei: 220,000 lei until March 2018, 300,000 lei from 1 April 2018 (Law 72/2018) and 395,000 lei from 1 September 2025 (Ordinance 22/2025). In 2024 the lei value of the \euro{}60,000 rate boundary lies within 1,500 lei of 300,000, so the two cannot be separated; in 2025 the VAT threshold moved away and the boundary can be observed on its own (Section~\ref{sec:vat}). The consulting and management cap of 20 percent, in force in 2014--2017 and 2023, is a further margin the statements do not let us observe.
+
+\section{Data}\label{sec:data}
+
+\paragraph{Financial statements.} The Ministry of Finance publishes, for each fiscal year, the main indicators of the annual financial statements of every company, identified by fiscal code (CUI) and CAEN activity code: balance-sheet totals, net turnover, total revenue, total expenses, gross and net profit or loss, and average headcount. Two forms exist, the micro-entity form and the full form. Their layout is stable from 2016; the 2014 and 2015 files use an older column set, which we harmonise. The files for 2021, 2023 and 2025 are early uploads made a few weeks after the filing deadline, while the others are later re-issues, so coverage of late filers differs by year; about 40,000 small firms appear in 2020 and 2022 but not 2021. Table~\ref{tab:panel} summarises the panel: 9.58 million firm-years after removing 32 duplicated records, 1.56 million firms. Total revenue is the variable used for the micro-enterprise notch; net turnover is used for the VAT threshold.
+
+\input{tables/panel}
+
+\paragraph{Tax regime.} The statements do not record the regime. We construct it in two ways. First, gross minus net profit is the income tax accrued; dividing it by revenue gives roughly 1, 2 or 3 percent for micro-enterprises, and dividing it by pre-tax profit gives roughly 16 percent for profit-tax firms. The difference comprises the profit tax, the micro-enterprise tax, the specific tax on hospitality firms in 2017--2022 and other taxes on the result, net of sponsorship and cash-register credits, so ratios such as 0.8 or 2.4 percent occur and a firm with positive tax and a pre-tax loss is most likely, but not certainly, a micro-enterprise. Second, the ANAF taxpayer registry, a snapshot dated 31 August 2023, carries one column per tax a firm is registered for; in the dataset's column dictionary the column for obligation 120 is the micro-enterprise income tax and the column for obligation 100 the profit tax. Table~\ref{tab:crosscheck} cross-tabulates the two for 2023. Of firms flagged for the micro-enterprise tax, 84 percent show a micro-enterprise tax pattern and 1 percent a profit-tax pattern; of firms flagged for profit tax, 22 percent show the profit-tax pattern, 8 percent a micro pattern, and half paid no tax, which is what loss-making and dormant profit-tax firms look like. Where both measures are decisive, 57 percent of firms, they agree in 92.5 percent of cases; 2.6 percent of 2023 filers are not in the registry. The inference identifies micro-enterprises well and profit-tax firms poorly, so we use the registry flag where regime membership matters and the statement-based measure only as a check.
+
+\input{tables/crosscheck}
+
+\paragraph{Employees.} Average headcount is blank for a quarter of small firms and reported as zero for a further 5 percent. We treat blanks as zero; among micro-enterprises in 2017 to 2022, when the 3 percent rate applied to firms without employees, three quarters of blank-headcount firms paid the 3 percent rate. The field is integer-valued in every record, and it behaves as an indicator of having had an employee at some point in the year rather than as a time-weighted average: of firms that go from zero to one employee in 2022, 12 percent paid the no-employee rate for most of that year, which a proper average would have rounded to zero. Late-year hires are therefore counted, and the 2022 timing below is not an artefact. The legal condition is met by a full-time contract, by part-time contracts summing to a full norm, or by a paid mandate contract, none of which the field distinguishes, so headcount is a proxy for the legal test in both directions.
+
+\paragraph{Trade register.} The National Trade Register Office publishes snapshots of all registered firms with registration date, legal form and address, and a table of legal representatives with name, date and place of birth. We use the snapshot of 2 September 2026, key persons on name, birth date and birth place, hashed, and keep administrators and legal representatives. The register lists administrators as of the snapshot date, not shareholders and not historical administrators, so common administration is our proxy for common ownership; the open data carries a representatives table only in snapshots from November 2025 onwards, so administrators at the time of the 2018--2023 observations cannot be recovered, and a firm whose administrator changed since is mismeasured. Eighty-five percent of the limited-liability companies in the analysis sample have exactly one administrator, for whom the proxy is close; company names carry no usable marker of sole ownership. Nearly all statement filers, 96 to 99 percent by year, link to at least one administrator, and the linked share is the same across the position groups compared below. Four percent of administrator records lack a birth date, so their key is the name alone; results are reported with and without them. Names, birth dates and addresses are used only to build hashed keys and do not appear in any output or replication file.
+
+\paragraph{Exchange rates.} BNR reference rates at the last quotation of each year.
+
+\section{Empirical strategy}\label{sec:method}
+
+For each year $t$ the notch location is $L_t = T_t \, e_{t-1}$, where $T_t$ is the euro ceiling for revenue in year $t$ and $e_{t-1}$ the BNR rate at the close of year $t-1$. Let $F_t$ be the distribution of revenue in year $t$ and $q_t = F_t(L_t)$ the quantile of the notch. For every other year $c$ let $L^*_c = F_c^{-1}(q_t)$ be the revenue at the same quantile. Year $c$ is an admissible control if no known notch of year $c$, the micro ceiling, an enacted or announced future ceiling, the \euro{}60,000 rate boundary, or the VAT threshold, lies within 25 percent of $L^*_c$. Bins are relative to the notch, 1 percent of the location wide, in a window of $\pm$20 percent, and shares $s_{t,k}$ are bin counts divided by the count in the window. The counterfactual share is the mean of $s_{c,k}$ over admissible controls. Excess mass is
+\begin{equation}
+b_t = \frac{\sum_{k \in B} \left( s_{t,k} - \bar{s}_{c,k} \right)}{\frac{1}{|B|}\sum_{k\in B} \bar{s}_{c,k}},
+\end{equation}
+with $B$ the five bins immediately below the notch, and the missing mass $m_t$ is the same sum over the five bins above, negative when the treated density falls short of the control there. The identifying assumption is that the shape of the revenue density around a given quantile is the same across years up to the effect of the notch. Quantile matching makes the counterfactual invariant to inflation and to real growth of the size distribution, but not to changes in its shape, and because shares are normalised within the window the excess and missing masses must offset within it, so $m_t$ is not independent evidence. We report a multinomial bootstrap, a block bootstrap that resamples control years, and, as the most relevant measure of uncertainty, the distribution of $b$ at 77 placebo locations at 0.45 to 2.5 times each year's ceiling that are themselves at least 25 percent from any notch. Because $b$ is expressed per bin it scales with bin width; with 1 percent bins $b$ is approximately the width of the bunching region in percent of the ceiling under the usual approximation. We also report the excess number of firms below the notch, which does not depend on bin width, its range over regions of 3, 5 and 8 percent, and the excess as a share of all filers in the year, $B/N_t$. The admissibility rule is applied to the matched location rather than the window edges, so a control window can contain the region above another year's notch; this affects only bins above the notch. Appendix Table~\ref{tab:controls} lists, for every notch and control year, the matched revenue and its distance to the nearest notch in that year, so the rule can be checked; the closest admissible cases are 26 to 34 percent away, all for the 2014--2016 notches against the VAT thresholds. Figure~\ref{fig:panels} also shows a polynomial counterfactual of the kind used by \citet{chetty2011}, for reference only.
+
+\section{Results}\label{sec:results}
+
+\subsection{The spike tracks the exchange rate}
+
+Within 2018--2022 the euro ceiling was constant at \euro{}1,000,000 but its lei value rose from 4.66 to 4.95 million lei as the leu depreciated. Figure~\ref{fig:lei} shows the revenue distribution in lei with 10,000-lei bins. The spike moves with the ceiling each year. Table~\ref{tab:lei} locates the modal 5,000-lei bin: in every year its centre lies 1,400 to 5,600 lei below the ceiling at the previous year-end rate, while the ceiling at the current year-end rate is 80,000 to 115,000 lei further right in 2019 to 2021 and within 5,000 lei in 2018 and 2022, when the leu barely moved. Firms target the in-year rule, which is also the lower of the two lei values, so the two explanations coincide. Nobody rounds revenue to 4,779,300 lei; a spike at that value that moves to 4,869,400 lei the next year is not round-number reporting or an accounting convention.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.85\textwidth]{lei_tracking_1M_2018_2022.png}
+\caption{Total revenue in lei around \euro{}1,000,000, 2018--2022, 10,000-lei bins. Dashed: ceiling at the previous year-end rate; dotted: at the current year-end rate.}\label{fig:lei}
+\end{figure}
+
+\input{tables/lei}
+
+\subsection{The spike follows the ceiling}
+
+Figure~\ref{fig:panels} shows a spike in the bin immediately below the ceiling in every year. It is at \euro{}65,000 in 2014 and 2015, moves to \euro{}100,000 in 2016 and \euro{}500,000 in 2017, sits at \euro{}1,000,000 from 2018 to 2022, returns to \euro{}500,000 in 2023 and 2024 and moves to \euro{}250,000 in 2025. In 2014 and 2015 a second, taller spike is visible at about \euro{}49,000, which is 220,000 lei, the VAT threshold of the time. In 2014 the spike straddles the computed notch rather than sitting below it, consistent with the whole-year re-taxation rule then in force and with the base issue noted above.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{bunching_panels.png}
+\caption{Total revenue around the micro-enterprise ceiling, 2014--2025, converted at the BNR rate at the close of the previous year. Dashed: ceiling; dotted: ceiling at the current year-end rate; red: polynomial counterfactual of degree 5 excluding three bins on each side, for reference; in 2014 and 2015 it passes through the VAT spike, which is inside the fitting window.}\label{fig:panels}
+\end{figure}
+
+\subsection{Difference-in-bunching estimates}
+
+Table~\ref{tab:dib} reports the estimates and Figure~\ref{fig:dib} the densities. In every year the treated density exceeds the same-quantile control density in the bins just below the notch, and the control density is smooth through it. Excess mass in the 5 percent region below the notch ranges from 1.9 percent of firms in the window, at the \euro{}500,000 ceiling of 2017 and the \euro{}250,000 ceiling of 2025, to 7.6 percent at the \euro{}500,000 ceiling of 2023. Bootstrap standard errors on $b$ are 0.07 to 0.16. At the 77 placebo locations $b$ has mean 0.01, standard deviation 0.15 and a maximum absolute value of 0.55; every notch estimate exceeds the largest placebo, most by a factor of two or more, but the 2017 and 2025 in-year estimates, 0.76 and 0.73, are only one and a half placebo standard deviations above that extreme and should be read as the weakest in the set. For 2025 two things dilute the notch: the enacted \euro{}100,000 ceiling for 2026 competed for the same firms' attention, and at the 3 percent rate that applied above \euro{}60,000 the break-even margin is 18.75 percent, above the 13.5 percent median margin of that year's bunchers, so crossing was a tax increase for fewer firms.
+
+As a share of all filers the excess is 0.06 to 0.30 percent of firms (Table~\ref{tab:robust}). This is the number to carry into the policy discussion. The threshold response is large relative to the local density and negligible relative to the economy: the revenue at stake in the regime comes from the hundreds of thousands of firms taxed at 1 to 3 percent of revenue well below the ceiling, not from the few thousand that manage their revenue to stay under it. Table~\ref{tab:robust} also shows that correcting the control quantile for the bunchers themselves changes $b$ by at most 0.1, that using only control years before or only after the treated year gives similar estimates, that dropping any single control year moves $b$ by less than 0.1, that a block bootstrap resampling control years gives standard errors of 0.07 to 0.16, in line with the placebo spread, and that restricting to firms present in the adjacent years lowers $b$ by 0.05 to 0.2. Narrowing the window lowers $b$ and widening it raises it, because the normalisation is within the window; the excess counts are unaffected. The excess counts vary across the 3, 5 and 8 percent region definitions by between 6 and 50 percent, most at the two extra notches where the bunching region is wide. Excluding hospitality firms, which faced no revenue ceiling in 2023, raises the 2023 estimate from 2.99 to 3.14, and hospitality firms alone show 0.58.
+
+Three patterns stand out. First, excess mass at the \euro{}1,000,000 ceiling grows from 3.5 percent of the window in 2018 to 5.5 percent in 2021, consistent with the gradual build-up of bunching found by \citet{kleven2013}. Second, 2023 is the largest response, at 7.6 percent, falling to 4.1 percent in 2024 at the same ceiling. Two things changed in 2023: the ceiling halved, so the density of firms at the new notch was high, and exit from the regime became permanent, so the cost of crossing rose. A natural conjecture is that firms displaced from above pulled revenue down to requalify, and Table~\ref{tab:transition} shows that 29.6 percent of the 2023 bunchers had been above \euro{}500,000 in 2022; but the same is true at that location in years when it was not a threshold, since firms just below any point are disproportionately firms that were above it the year before. The ratio to a comparison group further below is 1.78 in 2023 against 1.55 to 1.96 in placebo years, so the inflow from above is mean reversion. Newly created firms account for 11 percent of the 2023 excess, against 7 percent in 2021 and 13 percent in 2024, so entry at the threshold is a minor part of it. Third, the two extra rows show a second notch operating. In 2022 the ceiling in force was \euro{}1,000,000, but from July to December 2022 firms expected 2023 status to depend on 2022 revenue being below \euro{}500,000; a spike of 2.0 percent of the window appears there, with none at that location in 2021, and the December deferral came too late to undo it. In 2025 the same occurs at \euro{}100,000, enacted in December 2024 for 2026 status: 3.7 percent of the window in excess, located at the lei value of \euro{}100,000 at the end-2024 rate, the last rate firms could observe, rather than at the end-2025 rate the law prescribes. The modal 1,000-lei bin is 496,000 to 497,000 lei against 497,410 lei for \euro{}100,000 at the end-2024 rate; a round-number spike would sit at 499,000 to 500,000, and does not.
+
+\input{tables/dib}
+\input{tables/robust}
+\input{tables/transition}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{diff_in_bunching.png}
+\caption{Treated-year density (bars) and same-quantile control density (line) around each notch, bins of 1 percent of the notch location.}\label{fig:dib}
+\end{figure}
+
+\subsection{Who bunches: margins and sectors}
+
+The notch is a tax increase only for firms whose margin exceeds the ratio of the two rates: 6.25 percent at a 1 percent revenue tax and 18.75 percent at 3 percent. Table~\ref{tab:margins} shows that firms in the 5 percent below the ceiling report median pre-tax margins of 11 to 20 percent, against 6 to 10 percent for firms just above and 7 to 12 percent for firms further below. Table~\ref{tab:sector} shows where they are. In 2023, excess mass is 12 to 15 percent of the window in professional, administrative, health and real-estate services and 10 percent in information and communication, against 5 percent in trade, 3.5 percent in transport and 1 percent in agriculture, and the bunchers in the service sectors report margins of 29 to 43 percent against 10 to 12 percent in trade and transport. The same ordering holds at the \euro{}250,000 ceiling of 2025, where information services lead at 5 percent and trade shows none. The sectors that bunch are the ones the 2023--2024 reforms singled out, and they are the ones where the regime saves the most tax per leu of revenue.
+
+\input{tables/margins}
+\input{tables/sector}
+
+\FloatBarrier
+\subsection{Reported margins respond to the regime}
+
+Reported margins are not neutral to the regime: a micro-enterprise's tax does not depend on its profit while a profit-tax firm's does, so firms on profit tax have a reason to report lower margins that micro-enterprises lack. The ceiling changes let us test this directly. In 2018 the ceiling rose from \euro{}500,000 to \euro{}1,000,000, so every firm with 2017 revenue between those values was moved from profit tax to revenue tax without any action of its own; firms with 2017 revenue between \euro{}1,000,000 and \euro{}2,000,000 stayed on profit tax. In 2023 the cut reversed the move for firms with 2022 revenue in the same band. Table~\ref{tab:eventstudy} follows both groups in balanced panels with wide bands, (\euro{}500,000, \euro{}1,000,000] against (\euro{}1,000,000, \euro{}2,000,000]. In the 2018 event the treated group's inferred micro share jumps from 27 to 72 percent and its median reported margin rises by 0.8 percentage points relative to the control group; in the 2023 event the micro share falls from 75 to 24 percent by 2024 and the margin falls by 1.1 to 2.4 points. But a placebo that selects the same bands in 2019 produces relative changes of $-0.4$ to $-1.5$ points through mean reversion, since the bands compare firms that differ twofold in size. Table~\ref{tab:eventnarrow} therefore narrows the bands to 20 percent either side of the cut-off, assigns them on two-year average revenue, and uses placebos built at the same calendar time: the same bands at cut-offs of \euro{}1,500,000 and \euro{}2,000,000 in the same base years, where no regime changed. With narrow bands the raw pre-period differences are within 0.2 points of zero, and the contemporaneous placebos are within 0.5 points of zero before and after, so the correction is small and does not create a pre-trend. Entry into the revenue-tax regime in 2018 raises the treated group's median margin by 0.7 points in the first year (standard error 0.2), from a base of about 6 percent; net of the placebos, 0.6 (0.3). Exit in 2023 lowers it by 1.0, 1.6 and 2.0 points over three years; net of the placebos, $-0.8$ (0.3), $-1.5$ (0.4) and $-1.9$ (0.3). Both effects have the predicted sign. The exit effect is the robust one, two to five standard errors from zero at every horizon; the entry effect is significant in the first year and imprecise after, at 0.3 (0.3) and 0.5 (0.3) in the second and third. The asymmetry is itself sensible: cost misreporting is easier to start under a profit tax than to unwind on leaving it, and the exit effect builds over years, which is consistent with reporting adjusting gradually. Reported margins move by 10 to 25 percent of their level when a firm changes regime without changing anything else.
+
+\input{tables/eventstudy}
+\input{tables/eventnarrow}
+
+\subsection{What the estimates do not identify}
+
+The standard route from excess mass to an elasticity runs through the width of the bunching region, found where the cumulative deficit above the notch offsets the excess below. In our data that point is not reached before the window edge in any year: the missing mass is spread over the whole window above the notch rather than concentrated next to it, which the within-window normalisation makes hard to distinguish from a level shift. Two further obstacles are specific to this notch. The tax change on crossing depends on the firm's margin, since the base switches from revenue to profit, and at the 3 percent rate in force in 2014 to 2016 and 2024 to 2025 the median buncher's reported margin lies below the 18.75 percent at which the regime saves tax, so a representative-firm elasticity has no clear meaning. And reported margins respond to the regime, as the previous subsection shows. We therefore report excess mass and excess shares. For completeness, Table~\ref{tab:elasticity} in the appendix reports the Kleven--Waseem reduced-form elasticity under both proxies for the bunching width: read from $b$ it is 0.003 to 0.02 in the 1 percent years and undefined in the 3 percent years, where the notch is not a tax increase at the median reported margin; read from the hole it is 1 to 5. Two proxies that differ by three orders of magnitude are the demonstration that the object is not identified here.
+
+\subsection{Comparison with polynomial estimates}
+
+The polynomial counterfactual in Figure~\ref{fig:panels} gives excess-mass estimates of 0.4 to 2.0 in a baseline specification. Across 27 combinations of bin width, polynomial degree and excluded window they range from negative values to more than twice the baseline in most years. Part of this is mechanical, since $b$ scales with bin width, and in 2014 and 2015 the VAT spike lies inside the fitting window; but even holding bin width fixed the range across degrees and exclusion windows exceeds the bootstrap standard error several times over, the concern raised by \citet{blomquist2021}. The difference-in-bunching estimates involve no functional form; their choices, the window, the bin width and the exclusion rule for control years, are transparent, and the placebo distribution is the honest measure of their uncertainty.
+
+\FloatBarrier
+\section{Other margins}\label{sec:margins}
+
+\subsection{The VAT threshold and the rate boundary}\label{sec:vat}
+
+The VAT registration threshold moved from 300,000 to 395,000 lei on 1 September 2025, and the 2025 distribution of turnover shows the spike at 300,000 lei gone and a spike at 395,000 lei in its place, with polynomial excess mass of 3.0 against 0.6 at that location in 2024 (Table~\ref{tab:vat}). Firms adjusted full-year turnover to a threshold that changed with four months of the year remaining, although part of the spike is mechanical, since the ordinance let firms that crossed 300,000 lei in August 2025 stay unregistered up to the new threshold. That relocation is our identification at the VAT threshold, because the difference-in-bunching estimator is not available there: a VAT notch exists in every year within 25 percent of the same-quantile location, so no year is an admissible control. The polynomial estimates in Table~\ref{tab:vat} and Figure~\ref{fig:vat} show excess mass between 2.8 and 6.6 in every year from 2014 to 2024 at bin widths of 0.7 to 0.9 percent of the threshold, against 0.4 to 2.0 for the micro-enterprise notch at bin widths of 1.5 to 2 percent; the VAT response is the larger even after allowing for the difference in bin width, and the spike moved from 220,000 to 300,000 lei when the threshold changed in April 2018. The legal base is the turnover of Article 310(2), which differs from net turnover by exempt and ancillary items; net turnover is blank for a fifth of micro-entity forms but for under 1 percent of firms near the threshold.
+
+The move of the VAT threshold also uncovers the \euro{}60,000 boundary between the 1 and 3 percent rates, a notch of two points on the whole revenue base that exists from 2024. In 2024 the boundary and the VAT threshold lie 1,500 lei apart and the combined spike has polynomial excess mass of 4.9. In 2025, with the VAT threshold at 395,000 lei, a spike remains at 296,000 to 298,000 lei, the lei value of \euro{}60,000 at the end-2024 rate, with excess mass of 0.9 (Table~\ref{tab:boundary60k}, Figure~\ref{fig:boundary60k}): about a fifth of the combined 2024 spike, so most of the earlier spike was the VAT notch. Firms do respond to the rate boundary, but weakly relative to the exemption thresholds. Two points on the whole base is a large notch, and the weak response has a plausible cause: the activity list already puts software, legal and medical firms on 3 percent regardless of revenue, and those are the high-margin firms for which two points of revenue matter most, so the boundary binds mainly for firms with less at stake.
+
+\input{tables/vat}
+\input{tables/boundary60k}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{boundary_60k_2023_2025.png}
+\caption{Total revenue from 250,000 to 450,000 lei, 2023--2025, 1,000-lei bins, with the \euro{}60,000 rate boundary and the VAT thresholds.}\label{fig:boundary60k}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{vat_threshold_panels.png}
+\caption{Net turnover around the VAT registration threshold, 2,000-lei bins.}\label{fig:vat}
+\end{figure}
+
+\subsection{The employee condition}
+
+From 1 January 2023 a micro-enterprise must have at least one employee, tested at 31 December 2022; the condition was enacted in July 2022. Table~\ref{tab:emp} shows the distribution of headcount among firms with revenue below \euro{}500,000: the share with exactly one employee rose from 31.9 percent in 2021 to 37.6 percent in 2022 and 40.7 percent in 2023, while the share with five or more fell. Table~\ref{tab:emptrans} follows zero-employee firms into the next year. In the 2021 to 2022 transition 22.3 percent of them moved to exactly one employee, against 11.1 to 11.3 percent in the two preceding transitions, or 20.3 percent when the sample is restricted to firms present since 2020 to hold filing coverage fixed; among zero-employee firms above \euro{}1,500,000, which the rule did not touch, the rate stayed at 5 to 6 percent throughout. This is about 20,000 additional one-employee firms. Of micro-enterprises that still had no employees at the end of 2022, 82 percent carried the profit-tax registration flag in 2023, and 15 percent had one employee and 3 percent two or more by the end of 2023. The hiring response came in the enactment year; firms that had not hired by the deadline left the regime rather than hire afterwards. Among the 2022 hirers, 31 percent paid a blended rate that year, consistent with a hire during the year, and 12 percent the no-employee rate, consistent with a hire in the last quarter; the corresponding shares in the 2021 placebo are 14 and 19 percent. We read the response as compliance at the minimum cost rather than as job creation.
+
+\input{tables/emp}
+\input{tables/emptrans}
+
+\subsection{Splitting}
+
+Table~\ref{tab:split} compares limited-liability companies in the 5 percent below the ceiling with firms just above it, which are of the same size, and with firms further below and well above. Pooled over 2018--2023, 2.7 percent of bunchers have an administrator who registered another firm in the preceding eighteen months, against 2.0 percent of firms just above ($z = 4.3$ with standard errors clustered by firm) and 1.7 percent further below; 12.2 percent have another firm newly registered at their address, against 9.2 and 8.7 percent ($z = 8.6$). Dropping administrators without a birth date, whose key may merge namesakes, gives 2.4 against 1.7 percent, the same ratio. The share whose administrator runs any other firm, regardless of date, is similar for bunchers and firms well above the ceiling, so the timing measures rather than the level carry the information. Bunchers are also younger than firms just above, 13 percent under three years old against 8 percent, and a recently registered sibling is more likely for a young firm. Table~\ref{tab:splitage} therefore compares within age bands: bunchers exceed the just-above group in every band, and standardising to the bunchers' age distribution the premium is 23 percent on the administrator measure and 20 percent on the address measure. At the small ceilings of 2015--2017 the administrator measure shows no difference.
+
+The 2024 rules provide two checks. From 2023 a person could hold over 25 percent in at most three micro-enterprises, and from 2024 in one, while the ceiling began to be tested on the combined revenue of linked enterprises. If the premium reflects splitting to stay under the ceiling, it should fall once splitting no longer helps, and combined revenue should itself start to bunch. The first prediction holds on the administrator measure: bunchers and firms just above are at 1.4 percent each in 2024, against 2.0 and 1.6 in 2023; a gap remains on the address measure. The second does not: Table~\ref{tab:groups} shows no excess mass in the combined revenue of firms sharing an administrator at \euro{}500,000 in 2024, and firms inside such groups bunch individually at the same rate as single firms. Either the aggregation rule was not enforced or salient in its first year, or common administration is too weak a proxy for the ownership links the rule is written on; the evidence does not distinguish these, and it means the splitting result should be read as a modest, robust correlation rather than an established mechanism. Cohorts of firms that lost the regime when the ceiling fell registered new firms at the same rate relative to the band below as placebo cohorts, so whatever splitting there is serves to stay under the line rather than to react to losing the regime. The register lists administrators as of 2026 rather than shareholders at the time, and the address measure will catch shared accountants' premises despite the exclusion of addresses hosting more than twenty firms.
+
+\input{tables/split}
+\input{tables/splitage}
+\input{tables/groups}
+
+\FloatBarrier
+\section{Conclusion}\label{sec:conc}
+
+Romania's micro-enterprise ceiling moved six times in twelve years and the distribution of reported firm revenue moved with it, to within a few thousand lei of the ceiling's value at the exchange rate written into the law. The variation identifies bunching without a polynomial, under a stated and tested assumption, and the estimator returns zero where there is no notch. Excess mass is 2 to 8 percent of firms near the ceiling and 0.06 to 0.30 percent of all firms: the threshold is where the regime is visible, not where its cost lies. The channels are consistent with a tax-saving motive concentrated in high-margin services: bunching is two to three times stronger in professional and information services than in trade, reported margins rise by about 0.7 points when firms are moved onto the revenue tax and fall by 1 to 2 points when they are moved off it, firms took on a single employee in the year the employee condition was enacted or left the regime, and firms at the ceiling are somewhat more likely than equally sized and aged firms above it to have spun off a sibling firm, a premium that faded when linked enterprises began to be aggregated, even though combined revenue does not bunch. A static revenue simulation of the kind used in recent Romanian policy debate \citep{ban2023} assumes none of these responses; the estimates here are the behavioural inputs such simulations lack, and their aggregate size says that the ceiling itself is a second-order concern. Converting the excess mass into an elasticity requires a model in which the tax base changes at the threshold, margins are heterogeneous and reported margins respond to the regime; the missing mass above the notch is too diffuse in these data to support the standard shortcut.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+\bibitem[Almunia and L\'opez-Rodr\'iguez(2018)]{almunia2018} Almunia, M. and D. L\'opez-Rodr\'iguez (2018). Under the radar: The effects of monitoring firms on tax compliance. \emph{American Economic Journal: Economic Policy} 10(1), 1--38.
+\bibitem[Asatryan and Peichl(2016)]{asatryan2016} Asatryan, Z. and A. Peichl (2016). Responses of firms to tax, administrative and accounting rules: Evidence from Armenia. ZEW Discussion Paper 16-065.
+\bibitem[Bachas and Soto(2021)]{bachas2021} Bachas, P. and M. Soto (2021). Corporate taxation under weak enforcement. \emph{American Economic Journal: Economic Policy} 13(4), 36--71. doi:10.1257/pol.20180564.
+\bibitem[Ban and Buciu(2023)]{ban2023} Ban, C. and P. Buciu (2023). \emph{Reforma fiscal\u{a}: propuneri pe termen scurt}. Bucharest: Friedrich-Ebert-Stiftung.
+\bibitem[Best and Kleven(2018)]{best2018} Best, M. and H. Kleven (2018). Housing market responses to transaction taxes: Evidence from notches and stimulus in the UK. \emph{Review of Economic Studies} 85(1), 157--193.
+\bibitem[Blomquist et al.(2021)]{blomquist2021} Blomquist, S., W. Newey, A. Kumar and C.-Y. Liang (2021). On bunching and identification of the taxable income elasticity. \emph{Journal of Political Economy} 129(8), 2320--2343.
+\bibitem[Boonzaaier et al.(2019)]{boonzaaier2019} Boonzaaier, W., J. Harju, T. Matikka and J. Pirttil\"a (2019). How do small firms respond to tax schedule discontinuities? Evidence from South African tax registers. \emph{International Tax and Public Finance} 26(5), 1104--1136. doi:10.1007/s10797-019-09550-z.
+\bibitem[Chetty et al.(2011)]{chetty2011} Chetty, R., J. Friedman, T. Olsen and L. Pistaferri (2011). Adjustment costs, firm responses, and micro vs. macro labor supply elasticities: Evidence from Danish tax records. \emph{Quarterly Journal of Economics} 126(2), 749--804.
+\bibitem[Consiliul Fiscal(2024)]{cf2024} Consiliul Fiscal (2024). \emph{Raport anual 2023}. Bucharest.
+\bibitem[Dharmapala et al.(2011)]{dharmapala2011} Dharmapala, D., J. Slemrod and J. Wilson (2011). Tax policy and the missing middle: Optimal tax remittance with firm-level administrative costs. \emph{Journal of Public Economics} 95(9--10), 1036--1047.
+\bibitem[Harju et al.(2019)]{harju2019vat} Harju, J., T. Matikka and T. Rauhanen (2019). Compliance costs vs. tax incentives: Why do entrepreneurs respond to size-based regulations? \emph{Journal of Public Economics} 173, 139--164.
+\bibitem[IMF(2025)]{imf2025} International Monetary Fund (2025). \emph{Romania: Technical Assistance Report, High-Level Summary}. Washington, DC.
+\bibitem[Kanbur and Keen(2014)]{kanbur2014} Kanbur, R. and M. Keen (2014). Thresholds, informality, and partitions of compliance. \emph{International Tax and Public Finance} 21(4), 536--559.
+\bibitem[Kleven and Waseem(2013)]{kleven2013} Kleven, H. and M. Waseem (2013). Using notches to uncover optimization frictions and structural elasticities: Theory and evidence from Pakistan. \emph{Quarterly Journal of Economics} 128(2), 669--723.
+\bibitem[Laz\u{a}r(2024)]{lazar2024} Laz\u{a}r, S. (2024). Effective tax rates and firm size under turnover tax: Evidence from a natural experiment on SMEs. \emph{Economics} 18(1), article 20220079. doi:10.1515/econ-2022-0079.
+\bibitem[Liu et al.(2021)]{liu2021vat} Liu, L., B. Lockwood, M. Almunia and E. Tam (2021). VAT notches, voluntary registration, and bunching: Theory and UK evidence. \emph{Review of Economics and Statistics} 103(1), 151--164.
+\bibitem[Marx(2024)]{marx2024} Marx, B. (2024). Dynamic bunching estimation with panel data. \emph{Journal of Econometric Methods} 13(2), 225--249. doi:10.1515/jem-2022-0031.
+\bibitem[Sharma et al.(2025)]{sharma2025dual} Sharma, R., J. Slemrod, M. Stimmelmayr, J. Wilson and P. Choi (2025). Optimal dual-regime business tax systems. NBER Working Paper 34418. doi:10.3386/w34418.
+\end{thebibliography}
+
+\appendix
+\section{Legal timeline}\label{app:legal}
+
+The regime's parameters were changed by Ordinance 8/2013 (mandatory regime, \euro{}65,000, 3 percent, from 1 February 2013), Ordinance 102/2013 (consulting cap, 2014), Ordinance 50/2015 (\euro{}100,000 and employee-dependent rates, 2016), Ordinance 3/2017 (\euro{}500,000 from 1 February 2017), Ordinance 79/2017 (\euro{}1,000,000 from 2018, consulting cap abolished), Ordinance 25/2018 (capital and employee opt-out from April 2018), Ordinance 16/2022 of 15 July 2022 (\euro{}500,000, employee condition, three-firm rule, optional regime with permanent exit, from 2023) as amended by Law 370/2022 of 20 December 2022 (revenue test deferred to 2023 revenue), Law 296/2023 (\euro{}60,000 rate boundary and activity list, 2024), Ordinance 115/2023 (one-firm rule and linked-enterprise aggregation, 2024), Ordinance 156/2024 of 31 December 2024 (\euro{}250,000 for 2025, \euro{}100,000 for 2026, consulting cap abolished), Ordinance 89/2025 (flat 1 percent from 2026) and Ordinance 8/2026 (turnover base from 2026). Exchange-rate provisions: Article 47(1)(c) for the year-end test and Article 52 for the in-year test of Law 227/2015, and before 2016 Article 112$^6$ of Law 571/2003 with its implementing norms; in every version the in-year test uses the BNR rate at the close of the previous financial year. VAT thresholds: Article 310 of Law 227/2015 as amended by Law 72/2018 (300,000 lei from 1 April 2018) and Ordinance 22/2025 (395,000 lei from 1 September 2025). A full table with Monitorul Oficial references accompanies the replication files. Policy assessments of the regime are in \citet{imf2025}, \citet{cf2024}, \citet{ban2023} and \citet{lazar2024}.
+
+\clearpage
+\section{Control years and reduced-form elasticities}
+\input{tables/controls}
+\input{tables/elasticity}
+\clearpage
+\section{Additional figures}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{anticipation_checks.png}
+\caption{Revenue around announced or enacted future ceilings and the new VAT threshold, with placebo years. Top: 2022 revenue at \euro{}500,000, announced in July 2022 for 2023 status and deferred in December 2022, with 2021 placebo. Middle: 2025 revenue at \euro{}100,000 at the end-2024 rate, enacted December 2024 for 2026 status, with 2024 placebo. Bottom: 2025 turnover at 395,000 lei with 2024 placebo. Polynomial counterfactuals for reference.}\label{fig:twonotch}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.85\textwidth]{lei_tracking_500k_2023_2024.png}
+\caption{Total revenue in lei around \euro{}500,000, 2023 and 2024, 5,000-lei bins. The grey line marks 2,500,000 lei, the nearest round number.}\label{fig:lei500}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.8\textwidth]{employee_margin.png}
+\caption{Share of firms with revenue below \euro{}500,000 reporting zero, one and two employees, 2019--2025.}\label{fig:emp}
+\end{figure}
+
+\end{document}

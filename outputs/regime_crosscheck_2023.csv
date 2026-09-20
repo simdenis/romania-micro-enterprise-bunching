@@ -1,0 +1,7 @@
+regime,flag_both,flag_micro,flag_none,flag_profit,not_in_anaf
+ambiguous,40,16047,20,30596,437
+micro,252,277265,60,19677,7102
+micro_loss,69,103544,18,14248,1966
+no_tax,70,34486,203,220021,10942
+other,142,19272,16,34966,344
+profit,43,4421,21,92503,2045
