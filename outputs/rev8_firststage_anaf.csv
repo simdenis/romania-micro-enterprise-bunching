@@ -1,0 +1,13 @@
+control,group,snapshot,n,matched_pct,anaf_micro_pct,anaf_profit_pct,inferred_micro_pct
+"control (1.0,1.2]",treated,Aug 2023,7556,100.0,39.7,60.0,40.1
+"control (1.0,1.2]",treated,Jun 2024,7556,100.0,6.0,93.9,19.3
+"control (1.0,1.2]",treated,"(2022 base, inference only)",7556,,,,66.3
+"control (1.0,1.2]",control,Aug 2023,4766,100.0,12.4,87.1,24.9
+"control (1.0,1.2]",control,Jun 2024,4766,100.0,2.2,97.7,18.5
+"control (1.0,1.2]",control,"(2022 base, inference only)",4766,,,,41.7
+"control (1.2,1.5]",treated,Aug 2023,7556,100.0,39.7,60.0,40.1
+"control (1.2,1.5]",treated,Jun 2024,7556,100.0,6.0,93.9,19.3
+"control (1.2,1.5]",treated,"(2022 base, inference only)",7556,,,,66.3
+"control (1.2,1.5]",control,Aug 2023,4797,100.0,6.7,92.7,21.4
+"control (1.2,1.5]",control,Jun 2024,4797,100.0,0.8,99.2,17.6
+"control (1.2,1.5]",control,"(2022 base, inference only)",4797,,,,25.1

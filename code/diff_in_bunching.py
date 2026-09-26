@@ -27,6 +27,7 @@ MICRO = {2014: 65e3, 2015: 65e3, 2016: 100e3, 2017: 500e3, 2018: 1e6, 2019: 1e6,
 # year-end eligibility threshold for next year when it differed and was already law, 60k sub-notch (2023+)
 def notches(y):
     n = [MICRO[y] * fx[y - 1]]
+    if y == 2015: n.append(100e3 * fx[2015])       # OUG 50/2015 (Oct 2015): 2016 status set by 2015 revenue against EUR 100k at the end-2015 rate
     if y == 2022: n.append(500e3 * fx[2022])       # OG 16/2022 announced 500k for 2023 status (deferred by Legea 370/2022 on 20 Dec 2022)
     if y == 2025: n.append(100e3 * fx[2024]); n.append(100e3 * fx[2025])   # OUG 156/2024: 2026 status set by 2025 revenue; firms can only know the end-2024 rate
     if y >= 2024: n.append(60e3 * fx[y - 1])       # 1% vs 3% rate boundary (Legea 296/2023; 2023 was a flat 1%)
@@ -36,7 +37,8 @@ def notches(y):
 
 # notches to estimate: (label, year, location in lei)
 TARGETS = [(f"{y}: micro €{int(MICRO[y]):,}", y, MICRO[y] * fx[y - 1]) for y in MICRO]
-TARGETS += [("2022: announced-for-2023 €500,000", 2022, 500e3 * fx[2022]),
+TARGETS += [("2015: next-year eligibility €100,000 (end-2015 rate)", 2015, 100e3 * fx[2015]),
+            ("2022: announced-for-2023 €500,000", 2022, 500e3 * fx[2022]),
             ("2025: next-year eligibility €100,000 (end-2024 rate)", 2025, 100e3 * fx[2024])]
 
 def quantile_of(y, x):            # F_y(x)

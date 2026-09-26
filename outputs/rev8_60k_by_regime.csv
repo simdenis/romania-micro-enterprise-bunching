@@ -1,0 +1,5 @@
+group,firms_280_320k,bin_296_298k,bin_298_300k,reference_mean_per_bin,excess_296_298,excess_298_300
+"micro, not listed",15247,1301,1089,780.5,0.67,0.4
+"micro, listed activity",1991,102,87,107.4,-0.05,-0.19
+profit tax,3479,185,176,181.8,0.02,-0.03
+other,8274,322,455,401.4,-0.2,0.13
