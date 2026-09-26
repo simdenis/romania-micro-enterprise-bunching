@@ -25,7 +25,7 @@ rows = [(lab[r], f"{ct.loc[r,'flag_micro']:,}", f"{ct.loc[r,'flag_profit']:,}", 
 core = ct.loc[["micro", "micro_loss", "profit"], ["flag_micro", "flag_profit"]]
 agree = (core.loc["micro", "flag_micro"] + core.loc["micro_loss", "flag_micro"] + core.loc["profit", "flag_profit"]) / core.values.sum()
 w("crosscheck", tab(["Regime inferred from statements", "ANAF: micro", "ANAF: profit", "ANAF: other/none", "Not in ANAF"], rows, "lrrrr",
-    "Tax regime inferred from the 2023 statements versus the ANAF tax-vector flag (June 2023)", "tab:crosscheck",
+    "Tax regime inferred from the 2023 statements versus the ANAF tax-vector flag (snapshot of 31 August 2023)", "tab:crosscheck",
     f"ANAF flags: IMP120 = registered for micro-enterprise income tax, IMP100 = registered for profit tax. Where both measures are decisive, they agree for {agree*100:.1f}\\% of firms."))
 
 # difference-in-bunching
@@ -63,8 +63,9 @@ w("vat", tab(["Year", "VAT threshold (lei)", "Firms in window", "$b$ (polynomial
 e = pd.read_csv(f"{OUT}/employee_margin.csv", index_col=0); et = pd.read_csv(f"{OUT}/employee_transitions_all.csv")
 rows = [(int(y), f"{r['0']:.1f}", f"{r['1']:.1f}", f"{r['2']:.1f}", f"{r['5+']:.1f}", f"{int(r.firms):,}") for y, r in e.iterrows()]
 w("emp", tab(["Year", "0 employees", "1", "2", "5+", "Firms"], rows, "lrrrrr", "Employee counts among firms with revenue below \\euro{}500,000 (\\% of firms)", "tab:emp", "Average annual headcount as reported in the statements."))
-rows = [(int(r.base_year), f"{int(r.firms_0emp):,}", f"{r.to_1emp/(100-r.no_filing_next)*100:.1f}", f"{r.to_2plus/(100-r.no_filing_next)*100:.1f}", f"{r.stay_0emp/(100-r.no_filing_next)*100:.1f}") for _, r in et.iterrows()]
-w("emptrans", tab(["Year $t$", "Firms with 0 employees in $t$", "1 employee in $t+1$", "2+ in $t+1$", "Still 0 in $t+1$"], rows, "lrrrr",
+et = pd.read_csv(f"{OUT}/employee_transitions_conditional.csv")
+rows = [(int(r.base_year), f"{int(r.firms_0emp_filing_next):,}", f"{r.to_1emp:.1f}", f"{r.to_2plus:.1f}", f"{r.stay_0emp:.1f}") for _, r in et.iterrows()]
+w("emptrans", tab(["Year $t$", "Firms with 0 employees in $t$ filing in $t+1$", "1 employee in $t+1$", "2+ in $t+1$", "Still 0 in $t+1$"], rows, "lrrrr",
     "Transitions of zero-employee firms (revenue below \\euro{}500,000) into the next year, conditional on filing in both years (\\%)", "tab:emptrans", "The one-employee condition was enacted in July 2022 and tested at 31 December 2022. Filing coverage differs across years because some annual files are early uploads, so shares are conditional on a statement being present in $t+1$."))
 
 # splitting pooled
@@ -77,7 +78,7 @@ for col, key, name in [("pct_sib_new", "sib_new", "Administrator registered anot
     z = CZ[(CZ.years == "2018--2023") & (CZ.measure == key)].z_clustered.item()
     rows.append((name, *[f"{v[0]*100:.2f}" for v in vals], f"{z:.1f}"))
 early = {r.measure: r for _, r in CZ[CZ.years == "2015--2017"].iterrows()}
-w("split", tab(["Measure", "Bunchers", "Just above", "10--25\\% below", "25--100\\% above", "$z$"], rows, "p{5.2cm}rrrrr",
+w("split", tab(["Measure", "Bunchers", "Just above", "10--25\\% below", "25--100\\% above", "$z$"], rows, "p{5.4cm}rrrrr",
     "Sibling-firm indicators by position relative to the threshold, SRLs, pooled 2018--2023", "tab:split",
     f"Pooled shares, \\%. $z$ tests bunchers against firms just above the threshold with standard errors clustered by firm. At the small ceilings of 2015--2017 the corresponding shares for bunchers and firms just above are {early['sib_new'].bunchers:.2f} versus {early['sib_new'].just_above:.2f} ($z = {early['sib_new'].z_clustered:.1f}$) on the administrator measure, {early['addr_new'].bunchers:.2f} versus {early['addr_new'].just_above:.2f} ($z = {early['addr_new'].z_clustered:.1f}$) on the address measure and {early['any_sib'].bunchers:.2f} versus {early['any_sib'].just_above:.2f} ($z = {early['any_sib'].z_clustered:.1f}$) on the any-date measure. Standardising the just-above group to the bunchers' age distribution gives 2.70 versus 2.20 on the administrator measure and 12.26 versus 10.23 on the address measure (Appendix Table~\\ref{{tab:splitage}}). Administrators as recorded in the ONRC snapshot of 2 September 2026; persons administering more than 50 firms and addresses hosting more than 20 firms excluded. Bunchers: 0--5\\% below the threshold; just above: 0--10\\% above.", r"\small", resize=False))
 print("tables written:", sorted(os.listdir(T)))
@@ -158,8 +159,8 @@ w("sector", tab(["CAEN section", "2021 (\\euro{}1M)", "2023 (\\euro{}500k)", "20
     "Difference-in-bunching within each CAEN section, matched at the section's own quantile, same control years as the pooled estimate; sections with fewer than 800 firms in the window omitted. Hospitality faced no revenue ceiling in 2023."))
 # narrower main dib table: move control years to an appendix table
 d = pd.read_csv(f"{OUT}/diff_in_bunching.csv"); c = pd.read_csv(f"{OUT}/diff_in_bunching_counts.csv"); m = d.merge(c[["notch", "excess_firms_5pct", "excess_share_5pct", "excess_firms_3pct", "excess_firms_8pct"]], on="notch")
-rows = [(lab(r.notch), f"{r.location_lei/1e6:.3f}", f"{r.firms_in_window:,}", f"{r.b_diff:.2f} ({r.boot_se:.2f})", f"{r.missing_mass_above:.2f}", f"{r.excess_firms_5pct:,}", f"{r.excess_share_5pct:.1f}", f"{r.excess_firms_3pct:,}--{r.excess_firms_8pct:,}") for _, r in m.iterrows()]
-w("dib", tab(["Notch", "Location (M lei)", "Firms in window", "$b$ (SE)", "$m$", "Excess firms", "\\% of window", "Range 3--8\\%"], rows, "llrrrrrr",
+rows = [(lab(r.notch), f"{r.location_lei/1e6:.3f}", f"{r.firms_in_window:,}", f"{r.b_diff:.2f} ({r.boot_se:.2f})", f"{r.missing_mass_above:.2f}", f"{r.excess_firms_5pct:,}", f"{r.excess_share_5pct:.1f}", f"{min(r.excess_firms_3pct, r.excess_firms_5pct, r.excess_firms_8pct):,}--{max(r.excess_firms_3pct, r.excess_firms_5pct, r.excess_firms_8pct):,}") for _, r in m.iterrows()]
+w("dib", tab(["Notch", "Location (M lei)", "Firms in window", "$b$ (SE)", "$m$", "Excess firms", "\\% of window", "Range over 3--8\\% regions"], rows, "llrrrrrr",
     "Difference-in-bunching estimates", "tab:dib",
     "Location = EUR threshold $\\times$ BNR rate at the close of the previous year (in-year notches; the 2025 year-end notch at the end-2024 rate). Window $\\pm$20\\%, bins 1\\% of the location. Control years are listed in Appendix Table~\\ref{tab:controls}. $b$ = excess mass in the five bins below the notch in units of counterfactual firms per bin; $m$ = the same over the five bins above, negative meaning a deficit (a hole) and positive an excess; SE from 300 multinomial bootstrap draws. Excess firms = excess in the 5\\% region below the notch, with its range over 3\\% and 8\\% regions.", r"\footnotesize"))
 rows = [(lab(r.notch), ctrl(r.controls), f"{r['quantile']:.3f}") for _, r in d.iterrows()]
@@ -207,3 +208,34 @@ w("eventnarrow", tab(["Year", "Horizon", "DiD, median margin, pp (SE)", "Placebo
     "Reported margins around regime switches: narrowed bands with contemporaneous placebos", "tab:eventnarrow",
     "Balanced panels. Treated band: two-year average revenue in (0.8, 1.0] $\\times$ the cut-off; control band: (1.0, 1.2] $\\times$ the cut-off; DiD = change in the treated band's median pre-tax margin minus the change in the control band's, relative to the base year. Placebos: the same construction at cut-offs of \\euro{}1.5M and \\euro{}2M in the same base year, where no regime changed. Corrected = DiD minus the mean of the two placebos. SE from 200 bootstrap draws over firms. Firms: 5,353/3,760 treated/control in 2018, 7,556/4,766 in 2023; placebo designs 2,200--4,800 per band.", r"\footnotesize"))
 print("sixth-revision table written")
+
+
+# ---- seventh revision ----
+cb = pd.read_csv(f"{OUT}/rev7_count_based.csv"); cbp = pd.read_csv(f"{OUT}/rev7_count_based_placebo.csv")
+rows = [(lab(r.notch), f"{r.b_count:.2f}", f"{int(r.excess_5below):,}", f"{int(r.deficit_5above):+,}", f"{int(r.deficit_20above):+,}", f"{int(r.diff_5to20below):+,}", f"{int(r.net_window):+,}", f"{100*r.net_window/(r.N_t*0):.0f}" if False else "") for _, r in cb.iterrows()]
+d0 = pd.read_csv(f"{OUT}/diff_in_bunching.csv").set_index("notch")
+rows = [(lab(r.notch), f"{r.b_count:.2f}", f"{int(r.excess_5below):,}", f"{int(r.deficit_5above):+,}", f"{int(r.deficit_20above):+,}", f"{int(r.diff_5to20below):+,}", f"{int(r.net_window):+,}", f"{100*r.net_window/d0.loc[r.notch,'firms_in_window']:.1f}") for _, r in cb.iterrows()]
+w("countbased", tab(["Notch", "$b$, count-based", "Excess, 5 bins below", "5 bins above", "5--20\\% above", "5--20\\% below", "Net, whole window", "Net, \\% of window"], rows, "lrrrrrrr",
+    "Count-based difference-in-bunching: firms relative to the same-quantile counterfactual scaled to the year's filers", "tab:countbased",
+    f"Each bin is a share of all firms with positive revenue in the year rather than of the window, so the counterfactual is not forced to integrate to the treated total. Columns give treated minus counterfactual in firms. At {len(cbp)} placebo locations the net window difference has mean {cbp.net_pct_of_window.mean():.1f}\\% of the window, standard deviation {cbp.net_pct_of_window.std():.1f} and 95th percentile of the absolute value {cbp.net_pct_of_window.abs().quantile(.95):.1f}; the count-based $b$ has standard deviation {cbp.b_count.std():.2f} and maximum {cbp.b_count.abs().max():.2f}.", r"\footnotesize"))
+fs = pd.read_csv(f"{OUT}/rev7_did_firststage.csv")
+rows = []
+for des, base in (("2018 entry", 2017), ("2023 exit", 2022)):
+    for ctrl in ("control (1.0,1.2]", "control (1.2,1.5]"):
+        g = fs[(fs.design == des) & (fs.control == ctrl)]; rows.append((r"\multicolumn{7}{l}{\emph{" + des + ", " + ctrl.replace("control ", "control band ") + r" $\times$ \euro{}1M}}",))
+        for _, r in g.iterrows():
+            rows.append((int(r.year), f"{r.micro_T:.1f}", f"{r.micro_C:.1f}", f"{r.first_stage_pp:+.1f}", f"{r.DiD_pp:+.2f}", "--" if pd.isna(r.per_switch_pp) else f"{r.per_switch_pp:+.2f}", f"{int(r.nT):,} / {int(r.nC):,}"))
+w("firststage", tab(["Year", "Micro share, treated (\\%)", "Micro share, control (\\%)", "First stage (pp)", "DiD, median margin (pp)", "Per regime switch (pp)", "$n$ T / C"], rows, "lrrrrrr",
+    "First stage and per-switch effects for the margin design", "tab:firststage",
+    "Micro share = share of the band inferred to be on the revenue tax that year. First stage = change in the treated band's micro share minus the control band's, relative to the base year. Per switch = DiD divided by the first stage, a ratio of medians to means that should be read as an order of magnitude. Bands on two-year average revenue: treated (0.8, 1.0] $\\times$ \\euro{}1M throughout.", r"\footnotesize"))
+fi = pd.read_csv(f"{OUT}/rev7_fiscal.csv")
+rows = [(r.band_eur, f"{int(r.firms):,}", f"{int(r.micro_firms):,}", f"{r.micro_tax_paid_mlei:,.0f}", f"{r.profit_tax_if_16pct_mlei:,.0f}", f"{r.gap_mlei:,.0f}", f"{r.gap_share:.0f}", f"{int(r.profit_firms):,}", f"{r.profit_tax_paid_mlei:,.0f}") for _, r in fi.iterrows()]
+w("fiscal", tab(["Revenue band (\\euro{}, prev.\\ rate)", "Firms", "Micro firms", "Micro tax paid", "16\\% of their profit", "Gap", "Gap share (\\%)", "Profit-tax firms", "Profit tax paid"], rows, "lrrrrrrrr",
+    "Fiscal magnitudes in 2023, million lei: micro-enterprise tax paid against 16 percent of reported pre-tax profit, by revenue band", "tab:fiscal",
+    "Micro firms are those inferred to be on the revenue tax from the statements; profit at 16\\% uses reported pre-tax profit floored at zero and is an upper bound, since Section~\\ref{sec:base} shows reported margins fall by 8 to 17 percent of their level when firms move to profit tax. The gap is the static revenue difference; the share column is each band's share of the total gap.", r"\footnotesize"))
+m3 = pd.read_csv(f"{OUT}/rev7_margins_3pct.csv"); b_ = m3[m3.group == "bunchers"].set_index("year"); a_ = m3[m3.group == "just_above"].set_index("year")
+rows = [(y, f"{b_.loc[y,'median_margin']:.3f}", f"{a_.loc[y,'median_margin']:.3f}", f"{b_.loc[y,'share_margin_gt_6_25']:.0f}", f"{b_.loc[y,'share_margin_gt_18_75']:.0f}", f"{a_.loc[y,'share_margin_gt_18_75']:.0f}", f"{b_.loc[y,'median_rate_paid_by_micro']:.1f}") for y in range(2014, 2026)]
+w("margins", tab(["Year", "Median margin, bunchers", "just above", "Bunchers: margin $>$ 6.25\\% (\\%)", "Bunchers: margin $>$ 18.75\\% (\\%)", "Just above: $>$ 18.75\\% (\\%)", "Median rate paid by micro bunchers (\\%)"], rows, "lrrrrrr",
+    "Pre-tax profit margins by position relative to the ceiling, and the rate bunchers paid", "tab:margins",
+    "Bunchers: 0--5\\% below the ceiling; just above: 0--10\\% above. Break-even margins are 6.25\\% at a 1\\% revenue tax and 18.75\\% at 3\\%. Last column: median of accrued tax over revenue among bunchers inferred to be on the revenue tax; in 2016 the rate depended on headcount and the median buncher paid 1\\%.", r"\footnotesize"))
+print("seventh-revision tables written")

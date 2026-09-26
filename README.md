@@ -59,6 +59,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python code/checks_round2.py && .venv/bin/python code/checks_round3.py && .venv/bin/python code/checks_round4.py
 .venv/bin/python code/revision_checks.py && .venv/bin/python code/revision2_checks.py && .venv/bin/python code/revision3_checks.py
 .venv/bin/python code/revision4_checks.py && .venv/bin/python code/revision5_checks.py && .venv/bin/python code/revision6_checks.py
+.venv/bin/python code/revision7_checks.py && .venv/bin/python code/revision7b_checks.py
 .venv/bin/python code/splitting_test.py
 .venv/bin/python code/make_tables.py && cd paper && tectonic -X compile main.tex
 ```
